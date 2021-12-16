@@ -1,0 +1,13 @@
+# IDE
+.idea
+.vscode
+
+# Config
+.env
+
+# Binaries for programs and plugins
+*.exe
+*.exe~
+
+# Test binary, built with `go test -c`
+*.test
