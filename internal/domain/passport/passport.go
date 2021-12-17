@@ -1,58 +1,64 @@
 package passport
 
-type Passport struct {
-	Header `xml:"Header"`
-	Towers `xml:"Towers"`
+type Router struct {
+	Passports []Passport
 }
 
-//TODO: Which format does change data have?
-//TODO: What is M?
+type Passport struct {
+	ID string
+	Data
+}
+
+type Data struct {
+	Header
+	Towers
+}
 
 type Header struct {
-	SiteID           int    `xml:"siteID"`
-	SectionName      string `xml:"sectionName"`
-	SectionID        int    `xml:"sectionID"`
-	EchName          string `xml:"echName"`
-	EchkName         string `xml:"echkName"`
-	Location         string `xml:"locationId"`
-	WayAmount        int    `xml:"wayAmount"`
-	CurrentWay       int    `xml:"currentWay"`
-	CurrentWayID     int64  `xml:"currentWayID"`
-	ChangeData       string `xml:"CHANGEDATA"`
-	InitialMeter     int64  `xml:"initialMeter"`
-	InitialKm        int    `xml:"initialKM"`
-	InitialPk        int    `xml:"initialPK"`
-	InitialM         int    `xml:"initialM"`
-	PlotLength       int    `xml:"plotLength"`
-	SuspensionAmount int    `xml:"suspensionAmount"`
+	SiteID           int
+	SectionName      string
+	SectionID        int
+	EchName          string
+	EchkName         string
+	Location         string
+	WayAmount        int
+	CurrentWay       int
+	CurrentWayID     int64
+	ChangeData       string
+	InitialMeter     int64
+	InitialKm        int
+	InitialPk        int
+	InitialM         int
+	PlotLength       int
+	SuspensionAmount int
 }
 
 type Towers struct {
-	Towers []Tower `xml:"Tower"`
+	Towers []Tower
 }
 
 type Tower struct {
-	ID             string `xml:"idtf"`
-	AssetNum       string `xml:"assetNum"`
-	StopSeq        string `xml:"stopSeq"`
-	Km             int    `xml:"km"`
-	Pk             int    `xml:"pk"`
-	M              int    `xml:"m"`
-	Type           string `xml:"TF_TYPE,omitempty"`
-	Turn           string `xml:"TURN"`
-	Radius         int    `xml:"RADIUS"`
-	Number         int    `xml:"number"`
-	Distance       int    `xml:"distance"`
-	Zigzag         int    `xml:"zigzag"`
-	Height         int    `xml:"height"`
-	Offset         int    `xml:"offset"`
-	Grounded       int    `xml:"grounded"`
-	Speed          int    `xml:"SPEED"`
-	SuspensionType string `xml:"suspensionType"`
-	Catenary       int    `xml:"catenary"`
-	WireType       string `xml:"WireType"`
-	CountWire      int    `xml:"CountWire"`
-	Longitude      int    `xml:"longitude,omitempty"`
-	Latitude       int    `xml:"Latitude,omitempty"`
-	Gabarit        int    `xml:"Gabarit,omitempty"`
+	ID             string
+	AssetNum       string
+	StopSeq        string
+	Km             int
+	Pk             int
+	M              int
+	Type           string
+	Turn           string
+	Radius         int
+	Number         int
+	Distance       int
+	Zigzag         int
+	Height         int
+	Offset         int
+	Grounded       int
+	Speed          int
+	SuspensionType string
+	Catenary       int
+	WireType       string
+	CountWire      int
+	Longitude      int
+	Latitude       int
+	Gabarit        int
 }
