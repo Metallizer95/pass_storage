@@ -4,11 +4,15 @@ type Manager interface {
 	SavePassport(passport Data) *Passport
 	UpdatePassport(passport Passport) *Passport
 	LoadPassportByID(id string) *Passport
-	DeletePassportByID(id string) error
+	DeletePassportByID(id string) *Passport
 }
 
 type passportManagerImpl struct {
 	repo Repository
+}
+
+func NewPassportManager(repository Repository) Manager {
+	return &passportManagerImpl{repo: repository}
 }
 
 func (mng *passportManagerImpl) SavePassport(p Data) *Passport {
@@ -23,6 +27,6 @@ func (mng *passportManagerImpl) UpdatePassport(passport Passport) *Passport {
 	return mng.repo.Update(passport)
 }
 
-func (mng *passportManagerImpl) DeletePassportByID(id string) error {
+func (mng *passportManagerImpl) DeletePassportByID(id string) *Passport {
 	return mng.repo.Delete(id)
 }

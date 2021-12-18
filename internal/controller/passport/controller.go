@@ -15,13 +15,13 @@ func New(s passport.SavePassportUseCase) *Controller {
 	return &Controller{SaveUseCase: s}
 }
 
-func (c *Controller) SavePassport(p passport.PassportModel) {
+func (c *Controller) SavePassport(p passport.Model) {
 	err := c.SaveUseCase.Save(p)
 	if err != nil {
 		log.Err(err)
 	}
 }
 
-func (c *Controller) LoadPassport(id int) *passport.PassportModel {
+func (c *Controller) LoadPassport(id int) *passport.Model {
 	return nil
 }

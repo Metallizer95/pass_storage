@@ -1,10 +1,10 @@
 package passport
 
 type Router struct {
-	Passports []PassportModel `xml:"passports"`
+	Passports []Model `xml:"passports"`
 }
 
-type PassportModel struct {
+type Model struct {
 	Header `xml:"Header"`
 	Towers `xml:"Towers"`
 }
