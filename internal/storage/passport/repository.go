@@ -1,4 +1,4 @@
-package passport
+package storage
 
 import (
 	"store_server/internal/domain/passport"

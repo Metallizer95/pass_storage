@@ -1,43 +1,51 @@
 package passportctrl
 
 import (
+	"encoding/xml"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"store_server/internal/usecase/passport"
 )
 
-type passportRoutes struct {
-	saveUseCase passport.SavePassportUseCase
-	loadUseCase passport.LoadPassportUseCase
+type Controller struct {
+	SaveUseCase passport.SavePassportUseCase
+	LoadUseCase passport.LoadPassportUseCase
 }
 
-func NewRouter(handler *gin.Engine, saveUseCase passport.SavePassportUseCase, LoadUseCase passport.LoadPassportUseCase) {
+func NewController(handler *gin.Engine, saveUseCase passport.SavePassportUseCase, LoadUseCase passport.LoadPassportUseCase) {
 	handler.Use(gin.Logger())
 	handler.Use(gin.Recovery())
 
-	handler.GET("/alive", func(c *gin.Context) {
-		c.Status(http.StatusOK)
-	})
-	r := passportRoutes{saveUseCase: saveUseCase, loadUseCase: LoadUseCase}
+	r := Controller{SaveUseCase: saveUseCase, LoadUseCase: LoadUseCase}
 	{
 		handler.POST("passport", r.SavePassport)
 		handler.GET("passport/:id", r.LoadPassport)
 	}
 }
 
-func (pr *passportRoutes) SavePassport(c *gin.Context) {
-	var request passport.Model
-	err := c.ShouldBindXML(&request)
-	if err != nil {
+func (ctrl *Controller) SavePassport(c *gin.Context) {
+	type reqModel struct {
+		Data passport.Model `xml:"Data"`
+	}
+	var request reqModel
+	if err := xml.NewDecoder(c.Request.Body).Decode(&request); err != nil {
 		fmt.Printf("[save passport]: error occurred: %v", err)
-		c.JSON(http.StatusBadRequest, nil)
+		c.XML(http.StatusBadRequest, nil)
 		return
 	}
+	//err := c.ShouldBindXML(&request)
 
-	pr.saveUseCase.Save(request)
+	pass := ctrl.SaveUseCase.Save(request.Data)
+	c.XML(http.StatusOK, pass)
 }
 
-func (pr *passportRoutes) LoadPassport(c *gin.Context) {
-
+func (ctrl *Controller) LoadPassport(c *gin.Context) {
+	p := ctrl.LoadUseCase.Load(c.Params.ByName("id"))
+	if p == nil {
+		fmt.Println("[load passport]: return nil pointer of passport")
+		c.XML(http.StatusInternalServerError, nil)
+		return
+	}
+	c.XML(http.StatusOK, p)
 }

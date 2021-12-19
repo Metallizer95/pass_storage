@@ -5,6 +5,7 @@ type Router struct {
 }
 
 type Model struct {
+	Id     string `xml:"id,omitempty"`
 	Header `xml:"Header"`
 	Towers `xml:"Towers"`
 }

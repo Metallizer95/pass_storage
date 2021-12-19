@@ -97,6 +97,7 @@ func (m *mapper) ToPassportModel(p passport.Passport) *Model {
 	}
 	h := p.Header
 	return &Model{
+		Id: p.ID,
 		Header: Header{
 			SiteID:           h.SiteID,
 			SectionName:      h.SectionName,

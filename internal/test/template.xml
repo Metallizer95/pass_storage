@@ -1,0 +1,46 @@
+<Data>
+    <Header>
+        <siteID>1</siteID>>
+        <sectionName>"test"</sectionName>
+        <echName>"test_ech"</echName>
+        <echkName>"test_echk"</echkName>>
+        <locationId>"locationID"</locationId>
+        <wayAmount>2</wayAmount>
+        <currentWay>1</currentWay>
+        <currentWayID>42124</currentWayID>
+        <CHANGEDATA>"change data"</CHANGEDATA>
+        <initialMeter>1</initialMeter>
+        <initialKm>1</initialKm>
+        <initialPK>1</initialPK>
+        <initialM>1</initialM>
+        <plotLength>10</plotLength>
+        <suspensionAmount>12</suspensionAmount>
+    </Header>
+    <Towers>
+        <Tower>
+            <idtf>"idtf"</idtf>
+            <assetNum>"assetNum"</assetNum>
+            <stopSeq>"stopSeq</stopSeq>
+            <km>10</km>
+            <pk>11</pk>
+            <m>12</m>
+            <TF_TYPE>"TF TYPE"</TF_TYPE>
+            <TURN>"R"</TURN>
+            <RADIUS>3</RADIUS>
+            <number>2</number>
+            <distance>1000</distance>
+            <zigzag>-400</zigzag>
+            <height>560</height>
+            <offset>0</offset>
+            <grounded>1</grounded>
+            <SPEED>200</SPEED>
+            <suspensionTime>"suspensionTime"</suspensionTime>
+            <catenary>1</catenary>
+            <WireType>"WireType"</WireType>
+            <CountWire>2</CountWire>
+            <longitude>0</longitude>
+            <Latitude>0</Latitude>
+            <Gabarit>0</Gabarit>
+        </Tower>
+    </Towers>
+</Data>
