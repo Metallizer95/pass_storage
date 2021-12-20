@@ -1,8 +1,9 @@
 package routers
 
 type Repository interface {
-	Create(route Router) *Router
-	Read(id string) *Router
-	Update(passport Router) *Router
-	Delete(id string) *Router
+	Create(route ViksRoute) *ViksRoute
+	Read(id string) *ViksRoute
+	ReadAll() []*ViksRoute
+	Update(passport ViksRoute) *ViksRoute
+	Delete(route ViksRoute) *ViksRoute
 }

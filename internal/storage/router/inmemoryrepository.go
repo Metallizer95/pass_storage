@@ -5,19 +5,18 @@ import (
 )
 
 type RepositoryInMemoryImpl struct {
-	data      map[string]routers.Router
-	idCounter int
+	data map[string]routers.ViksRoute
 }
 
 func New() *RepositoryInMemoryImpl {
-	return &RepositoryInMemoryImpl{data: make(map[string]routers.Router), idCounter: 0}
+	return &RepositoryInMemoryImpl{data: make(map[string]routers.ViksRoute)}
 }
 
-func (r *RepositoryInMemoryImpl) Create(p routers.Router) *routers.Router {
-	r.data[p.ID] = p
+func (r *RepositoryInMemoryImpl) Create(p routers.ViksRoute) *routers.ViksRoute {
+	r.data[p.ViksRoutedID] = p
 	return &p
 }
-func (r *RepositoryInMemoryImpl) Read(id string) *routers.Router {
+func (r *RepositoryInMemoryImpl) Read(id string) *routers.ViksRoute {
 	p, ok := r.data[id]
 	if !ok {
 		return nil
@@ -25,21 +24,29 @@ func (r *RepositoryInMemoryImpl) Read(id string) *routers.Router {
 	return &p
 }
 
-func (r *RepositoryInMemoryImpl) Update(route routers.Router) *routers.Router {
-	_, ok := r.data[route.ID]
+func (r *RepositoryInMemoryImpl) Update(route routers.ViksRoute) *routers.ViksRoute {
+	_, ok := r.data[route.ViksRoutedID]
 	if !ok {
 		return nil
 	}
-	r.data[route.ID] = route
-	result := r.data[route.ID]
+	r.data[route.ViksRoutedID] = route
+	result := r.data[route.ViksRoutedID]
 	return &result
 }
 
-func (r *RepositoryInMemoryImpl) Delete(id string) *routers.Router {
-	p, ok := r.data[id]
+func (r *RepositoryInMemoryImpl) Delete(route routers.ViksRoute) *routers.ViksRoute {
+	p, ok := r.data[route.ViksRoutedID]
 	if !ok {
 		return nil
 	}
-	delete(r.data, id)
+	delete(r.data, route.ViksRoutedID)
 	return &p
+}
+
+func (r *RepositoryInMemoryImpl) ReadAll() []*routers.ViksRoute {
+	var routes []*routers.ViksRoute
+	for _, v := range r.data {
+		routes = append(routes, &v)
+	}
+	return routes
 }
