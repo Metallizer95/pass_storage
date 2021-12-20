@@ -5,8 +5,8 @@ import "encoding/xml"
 // TODO: change response format to zip archive (load from db, squeeze and send to client)
 
 type RoutesModel struct {
-	XMLName    xml.Name   `xml:"VIKSROUTERS"`
-	RouteModel RouteModel `xml:"Routes"`
+	XMLName    xml.Name     `xml:"VIKSROUTERS,omitempty"`
+	RouteModel []RouteModel `xml:"Routes"`
 }
 
 type RouteModel struct {

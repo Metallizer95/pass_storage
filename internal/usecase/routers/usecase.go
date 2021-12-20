@@ -48,7 +48,13 @@ type saveRouterUseCaseImpl struct {
 }
 
 func (s *saveRouterUseCaseImpl) Save(route RouteModel) *RouteModel {
-	return nil
+	entity := ModelToRoute(route)
+	response := s.mng.SaveRoute(entity)
+	if response == nil {
+		return nil
+	}
+	responseModel := RouteToModel(*response)
+	return &responseModel
 }
 
 func NewSaveRouterUseCaseImpl(mng routers.Manager) SaveRouterUseCase {
@@ -61,7 +67,12 @@ type loadRouterByIDUseCaseImpl struct {
 }
 
 func (l *loadRouterByIDUseCaseImpl) Load(id string) *RouteModel {
-	return nil
+	route := l.mng.LoadRouteByID(id)
+	if route == nil {
+		return nil
+	}
+	model := RouteToModel(*route)
+	return &model
 }
 
 func NewLoadRouterByID(mng routers.Manager) LoadRouterByIDUseCase {
@@ -74,7 +85,12 @@ type loadRoutersUseCaseImpl struct {
 }
 
 func (l *loadRoutersUseCaseImpl) Load() *RoutesModel {
-	return nil
+	routes := l.mng.LoadRoutes()
+	if routes == nil {
+		return nil
+	}
+	routesModel := ListRouteToModel(routes)
+	return &routesModel
 }
 
 func NewLoadRoutersUseCase(mng routers.Manager) LoadRoutersUseCase {

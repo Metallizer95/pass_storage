@@ -22,7 +22,7 @@ func Run() {
 	useCases := passport.NewUseCases(repository)
 
 	//Routing of handler. Maybe need to create new interface for this
-	passportctrl.NewController(handler, useCases.SavePassport(), useCases.LoadPassport())
+	passportctrl.NewPassportHandlers(handler, useCases.SavePassport(), useCases.LoadPassport())
 	monitoring.AliveController(handler)
 
 	server := httpserver.New(handler)

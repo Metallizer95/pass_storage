@@ -4,7 +4,7 @@ import (
 	"store_server/internal/domain/routers"
 )
 
-func EntityToModel(route routers.ViksRoute) *RouteModel {
+func RouteToModel(route routers.ViksRoute) RouteModel {
 	var sectionSet []SectionModel
 	for _, section := range route.SectionSet {
 		s := SectionModel{
@@ -17,7 +17,7 @@ func EntityToModel(route routers.ViksRoute) *RouteModel {
 		}
 		sectionSet = append(sectionSet, s)
 	}
-	model := &RouteModel{
+	model := RouteModel{
 		MasterPmNum:    route.MasterPMNum,
 		TripChangeData: route.TripChangeData,
 		TripType:       route.TripType,
@@ -33,7 +33,7 @@ func EntityToModel(route routers.ViksRoute) *RouteModel {
 	return model
 }
 
-func ModelToEntity(model *RouteModel) *routers.ViksRoute {
+func ModelToRoute(model RouteModel) routers.ViksRoute {
 	var sectionSet []routers.Section
 	for _, section := range model.SectionSetModel.Section {
 		s := routers.Section{
@@ -46,7 +46,7 @@ func ModelToEntity(model *RouteModel) *routers.ViksRoute {
 		}
 		sectionSet = append(sectionSet, s)
 	}
-	entity := &routers.ViksRoute{
+	entity := routers.ViksRoute{
 		MasterPMNum:    model.MasterPmNum,
 		TripChangeData: model.TripChangeData,
 		TripType:       model.TripType,
@@ -58,4 +58,13 @@ func ModelToEntity(model *RouteModel) *routers.ViksRoute {
 		SectionSet:     sectionSet,
 	}
 	return entity
+}
+
+func ListRouteToModel(routes []*routers.ViksRoute) RoutesModel {
+	result := RoutesModel{}
+
+	for _, route := range routes {
+		result.RouteModel = append(result.RouteModel, RouteToModel(*route))
+	}
+	return result
 }

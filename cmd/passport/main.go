@@ -6,4 +6,6 @@ func main() {
 	app.Run()
 }
 
-//TODO: Add http Server and save data in memory
+// TODO: Inject logger
+// TODO: add error types instead nel returning
+// TODO: create structure of error on usecase layer
