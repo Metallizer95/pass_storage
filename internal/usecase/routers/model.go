@@ -11,9 +11,10 @@ type RoutesModel struct {
 
 type RouteModel struct {
 	XMLName         xml.Name        `xml:"VIKSROUTE,omitempty"`
-	Text            string          `xml:",chardata"`
+	Text            string          `xml:",chardata,omitempty"`
 	MasterPmNum     string          `xml:"MASTERPMNUM,attr"`
 	TripChangeData  string          `xml:"TripCHANGEDATA,attr"`
+	TripType        string          `xml:"TripType,attr"`
 	ViksRouteID     string          `xml:"VIKSROUTEID,attr"`
 	Car             string          `xml:"car,attr"`
 	CarID           string          `xml:"carID,attr"`
@@ -23,12 +24,12 @@ type RouteModel struct {
 }
 
 type SectionSetModel struct {
-	Text    string         `xml:",chardata"`
+	Text    string         `xml:",chardata,omitempty"`
 	Section []SectionModel `xml:"Section"`
 }
 
 type SectionModel struct {
-	Text        string `xml:",chardata"`
+	Text        string `xml:",chardata,omitempty"`
 	SiteId      string `xml:"siteId"`
 	Sequence    string `xml:"SEQUENCE"`
 	SectionId   string `xml:"sectionId"`

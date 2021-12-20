@@ -1,10 +1,6 @@
 package routers
 
-import "encoding/xml"
-
 type ViksRoute struct {
-	XMLName        xml.Name
-	Text           string
 	MasterPMNum    string
 	TripChangeData string
 	TripType       string
