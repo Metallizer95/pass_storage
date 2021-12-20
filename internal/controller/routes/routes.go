@@ -1,6 +1,7 @@
-package routes
+package routescontroller
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"store_server/internal/usecase/routers"
@@ -13,11 +14,11 @@ type controller struct {
 func NewRoutesHandlers(handler *gin.Engine, cases routers.UseCases) {
 	r := controller{useCases: cases}
 
-	gr := handler.Group("/route")
+	gr := handler.Group("route")
 	{
-		gr.POST("/save", r.Save)
-		gr.GET("/load/:id", r.LoadByID)
-		gr.GET("/load/all", r.LoadAll)
+		gr.POST("save", r.Save)
+		gr.GET("load/:id", r.LoadByID)
+		gr.GET("load/all", r.LoadAll)
 	}
 }
 
@@ -26,6 +27,7 @@ func (ctrl *controller) Save(c *gin.Context) {
 
 	err := c.ShouldBindXML(&body)
 	if err != nil {
+		fmt.Println(err)
 		c.XML(http.StatusBadRequest, nil)
 		return
 	}

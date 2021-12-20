@@ -1,4 +1,4 @@
-package storagerouter
+package routestorage
 
 import (
 	"store_server/internal/domain/routers"

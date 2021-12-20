@@ -5,13 +5,13 @@ import "encoding/xml"
 // TODO: change response format to zip archive (load from db, squeeze and send to client)
 
 type RoutesModel struct {
-	XMLName    xml.Name     `xml:"VIKSROUTERS,omitempty"`
+	XMLName    xml.Name     `xml:"VIKSROUTERS"`
 	RouteModel []RouteModel `xml:"Routes"`
 }
 
 type RouteModel struct {
-	XMLName         xml.Name        `xml:"VIKSROUTE,omitempty"`
-	Text            string          `xml:",chardata,omitempty"`
+	XMLName         xml.Name        `xml:"VIKSROUTE"`
+	Text            string          `xml:",chardata"`
 	MasterPmNum     string          `xml:"MASTERPMNUM,attr"`
 	TripChangeData  string          `xml:"TripCHANGEDATA,attr"`
 	TripType        string          `xml:"TripType,attr"`
@@ -24,12 +24,12 @@ type RouteModel struct {
 }
 
 type SectionSetModel struct {
-	Text    string         `xml:",chardata,omitempty"`
+	Text    string         `xml:",chardata"`
 	Section []SectionModel `xml:"Section"`
 }
 
 type SectionModel struct {
-	Text        string `xml:",chardata,omitempty"`
+	Text        string `xml:",chardata"`
 	SiteId      string `xml:"siteId"`
 	Sequence    string `xml:"SEQUENCE"`
 	SectionId   string `xml:"sectionId"`

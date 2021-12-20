@@ -7,8 +7,11 @@ import (
 	"os/signal"
 	"store_server/internal/controller/monitoring"
 	passportctrl "store_server/internal/controller/passport"
-	storage "store_server/internal/storage/passport"
+	routescontroller "store_server/internal/controller/routes"
+	passportstorage "store_server/internal/storage/passport"
+	routestorage "store_server/internal/storage/router"
 	"store_server/internal/usecase/passport"
+	"store_server/internal/usecase/routers"
 	"store_server/pkg/httpserver"
 	"syscall"
 )
@@ -16,20 +19,23 @@ import (
 func Run() {
 	handler := gin.New()
 
-	// Create repository
-	repository := storage.New()
+	// Create repoPassport
+	passportStore := passportstorage.New()
+	routeStore := routestorage.New()
 	// Create use-cases
-	useCases := passport.NewUseCases(repository)
+	passportUseCases := passport.NewUseCases(passportStore)
+	routeUseCase := routers.NewUseCases(routeStore)
 
-	//Routing of handler. Maybe need to create new interface for this
-	passportctrl.NewPassportHandlers(handler, useCases.SavePassport(), useCases.LoadPassport())
+	//Routing of handler
+	passportctrl.NewPassportHandlers(handler, passportUseCases.SavePassport(), passportUseCases.LoadPassport())
+	routescontroller.NewRoutesHandlers(handler, routeUseCase)
+
 	monitoring.AliveController(handler)
 
 	server := httpserver.New(handler)
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
 
-	// TODO: add logger
 	var err error
 	select {
 	case s := <-interrupt:
