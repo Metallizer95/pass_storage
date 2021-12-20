@@ -4,10 +4,6 @@ import (
 	"encoding/xml"
 )
 
-type Router struct {
-	Passports []Model `xml:"passports"`
-}
-
 //TODO: Which format does change data have?
 //TODO: What is M?
 

@@ -1,9 +1,5 @@
 package passport
 
-type Router struct {
-	Passports []Passport
-}
-
 type Passport struct {
 	ID string
 	Data
