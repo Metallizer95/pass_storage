@@ -23,9 +23,9 @@ type Header struct {
 	Location         string
 	WayAmount        int
 	CurrentWay       int
-	CurrentWayID     int64
+	CurrentWayID     int
 	ChangeData       string
-	InitialMeter     int64
+	InitialMeter     int
 	InitialKm        int
 	InitialPk        int
 	InitialM         int

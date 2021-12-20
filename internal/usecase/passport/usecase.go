@@ -2,11 +2,6 @@ package passport
 
 import "store_server/internal/domain/passport"
 
-type UseCases interface {
-	SavePassport() SavePassportUseCase
-	LoadPassport() LoadPassportUseCase
-}
-
 type useCasesImpl struct {
 	saveUseCase SavePassportUseCase
 	loadUseCase LoadPassportUseCase
@@ -31,10 +26,6 @@ func NewUseCases(repository passport.Repository) UseCases {
 	}
 }
 
-type SavePassportUseCase interface {
-	Save(passport Model) *Model
-}
-
 type savePassportUseCaseImpl struct {
 	mng passport.Manager
 	m   mapper
@@ -50,10 +41,6 @@ func NewSavePassportUseCase(mng passport.Manager, mapperImpl mapper) SavePasspor
 		mng: mng,
 		m:   mapperImpl,
 	}
-}
-
-type LoadPassportUseCase interface {
-	Load(id string) *Model
 }
 
 type loadPassportUseCaseImpl struct {

@@ -14,27 +14,32 @@ type mapper struct {
 
 // TODO: how I can copy structures by less code
 
+type TowerMapper interface {
+	ToTower(p Tower) *passport.Tower
+	ToTowerModel(p passport.Tower) *Tower
+}
+
 func (m *mapper) ToPassport(p Model) *passport.Data {
 	var towers passport.Towers
 	for _, t := range p.Towers.Towers {
 		towers.Towers = append(towers.Towers, passport.Tower{
-			ID:             t.ID,
+			ID:             t.Idtf,
 			AssetNum:       t.AssetNum,
 			StopSeq:        t.StopSeq,
 			Km:             t.Km,
 			Pk:             t.Pk,
 			M:              t.M,
-			Type:           t.Type,
-			Turn:           t.Turn,
-			Radius:         t.Radius,
+			Type:           t.TFTYPE,
+			Turn:           t.TURN,
+			Radius:         t.RADIUS,
 			Number:         t.Number,
 			Distance:       t.Distance,
 			Zigzag:         t.Zigzag,
 			Height:         t.Height,
 			Offset:         t.Offset,
 			Grounded:       t.Grounded,
-			Speed:          t.Speed,
-			SuspensionType: t.SuspensionType,
+			Speed:          t.SPEED,
+			SuspensionType: t.SuspensionType, //TODO: change time to type
 			Catenary:       t.Catenary,
 			WireType:       t.WireType,
 			CountWire:      t.CountWire,
@@ -50,14 +55,14 @@ func (m *mapper) ToPassport(p Model) *passport.Data {
 			SectionID:        p.Header.SectionID,
 			EchName:          p.Header.EchName,
 			EchkName:         p.Header.EchkName,
-			Location:         p.Header.Location,
+			Location:         p.Header.LocationId,
 			WayAmount:        p.Header.WayAmount,
 			CurrentWay:       p.Header.CurrentWay,
 			CurrentWayID:     p.Header.CurrentWayID,
-			ChangeData:       p.Header.ChangeData,
+			ChangeData:       p.Header.CHANGEDATA,
 			InitialMeter:     p.Header.InitialMeter,
 			InitialKm:        p.Header.InitialKm,
-			InitialPk:        p.Header.InitialPk,
+			InitialPk:        p.Header.InitialPK,
 			InitialM:         p.Header.InitialM,
 			PlotLength:       p.Header.PlotLength,
 			SuspensionAmount: p.Header.SuspensionAmount,
@@ -70,23 +75,23 @@ func (m *mapper) ToPassportModel(p passport.Passport) *Model {
 	var towers Towers
 	for _, t := range p.Towers.Towers {
 		towers.Towers = append(towers.Towers, Tower{
-			ID:             t.ID,
+			Idtf:           t.ID,
 			AssetNum:       t.AssetNum,
 			StopSeq:        t.StopSeq,
 			Km:             t.Km,
 			Pk:             t.Pk,
 			M:              t.M,
-			Type:           t.Type,
-			Turn:           t.Turn,
-			Radius:         t.Radius,
+			TFTYPE:         t.Type,
+			TURN:           t.Turn,
+			RADIUS:         t.Radius,
 			Number:         t.Number,
 			Distance:       t.Distance,
 			Zigzag:         t.Zigzag,
 			Height:         t.Height,
 			Offset:         t.Offset,
 			Grounded:       t.Grounded,
-			Speed:          t.Speed,
-			SuspensionType: t.SuspensionType,
+			SPEED:          t.Speed,
+			SuspensionType: t.SuspensionType, // TODO: change name of suspensionTime field
 			Catenary:       t.Catenary,
 			WireType:       t.WireType,
 			CountWire:      t.CountWire,
@@ -97,21 +102,21 @@ func (m *mapper) ToPassportModel(p passport.Passport) *Model {
 	}
 	h := p.Header
 	return &Model{
-		Id: p.ID,
+		ID: p.ID,
 		Header: Header{
 			SiteID:           h.SiteID,
 			SectionName:      h.SectionName,
 			SectionID:        h.SectionID,
 			EchName:          h.EchName,
 			EchkName:         h.EchkName,
-			Location:         h.Location,
+			LocationId:       h.Location,
 			WayAmount:        h.WayAmount,
 			CurrentWay:       h.CurrentWay,
 			CurrentWayID:     h.CurrentWayID,
-			ChangeData:       h.ChangeData,
+			CHANGEDATA:       h.ChangeData,
 			InitialMeter:     h.InitialMeter,
 			InitialKm:        h.InitialKm,
-			InitialPk:        h.InitialPk,
+			InitialPK:        h.InitialPk,
 			InitialM:         h.InitialM,
 			PlotLength:       h.PlotLength,
 			SuspensionAmount: h.SuspensionAmount,

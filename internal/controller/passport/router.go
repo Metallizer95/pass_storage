@@ -1,7 +1,6 @@
 package passportctrl
 
 import (
-	"encoding/xml"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -25,18 +24,17 @@ func NewController(handler *gin.Engine, saveUseCase passport.SavePassportUseCase
 }
 
 func (ctrl *Controller) SavePassport(c *gin.Context) {
-	type reqModel struct {
-		Data passport.Model `xml:"Data"`
-	}
-	var request reqModel
-	if err := xml.NewDecoder(c.Request.Body).Decode(&request); err != nil {
+
+	var request passport.Model
+	err := c.ShouldBindXML(&request)
+	if err != nil {
 		fmt.Printf("[save passport]: error occurred: %v", err)
 		c.XML(http.StatusBadRequest, nil)
 		return
 	}
 	//err := c.ShouldBindXML(&request)
 
-	pass := ctrl.SaveUseCase.Save(request.Data)
+	pass := ctrl.SaveUseCase.Save(request)
 	c.XML(http.StatusOK, pass)
 }
 
