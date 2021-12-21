@@ -4,11 +4,8 @@ import (
 	"encoding/xml"
 )
 
-//TODO: Which format does change data have?
-//TODO: What is M?
-
 type Model struct {
-	XMLName xml.Name `xml:"Data"`
+	XMLName xml.Name `xml:"SectionCertificate"`
 	Text    string   `xml:",chardata"`
 	ID      string   `xml:"id,omitempty"`
 	Header  Header   `xml:"Header"`

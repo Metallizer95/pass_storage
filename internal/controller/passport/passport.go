@@ -34,7 +34,6 @@ func (ctrl *Controller) SavePassport(c *gin.Context) {
 		c.XML(http.StatusBadRequest, nil)
 		return
 	}
-	//err := c.ShouldBindXML(&request)
 
 	pass := ctrl.SaveUseCase.Save(request)
 	c.XML(http.StatusOK, pass)

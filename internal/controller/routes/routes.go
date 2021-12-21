@@ -42,6 +42,7 @@ func (ctrl *controller) Save(c *gin.Context) {
 
 func (ctrl *controller) LoadByID(c *gin.Context) {
 	id := c.Params.ByName("id")
+	fmt.Println(id)
 	result := ctrl.useCases.LoadRouterByID().Load(id)
 
 	if result == nil {
