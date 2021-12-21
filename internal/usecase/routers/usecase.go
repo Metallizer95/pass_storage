@@ -76,7 +76,7 @@ type loadRoutersUseCaseImpl struct {
 	mng routers.Manager
 }
 
-func (l *loadRoutersUseCaseImpl) Load() *RoutesModel {
+func (l *loadRoutersUseCaseImpl) Load() *ListRoutesModel {
 	routes := l.mng.LoadRoutes()
 	if routes == nil {
 		return nil

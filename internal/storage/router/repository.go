@@ -1,7 +1,6 @@
 package routestorage
 
 import (
-	"fmt"
 	"store_server/internal/domain/routers"
 )
 
@@ -47,7 +46,6 @@ func (r *RepositoryInMemoryImpl) Delete(route routers.ViksRoute) *routers.ViksRo
 func (r *RepositoryInMemoryImpl) ReadAll() []routers.ViksRoute {
 	var routes []routers.ViksRoute
 	for _, v := range r.data {
-		fmt.Println(v.ViksRoutedID)
 		routes = append(routes, v)
 	}
 	return routes

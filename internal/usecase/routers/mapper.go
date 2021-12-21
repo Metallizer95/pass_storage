@@ -60,11 +60,21 @@ func ModelToRoute(model RouteModel) routers.ViksRoute {
 	return entity
 }
 
-func ListRouteToModel(routes []routers.ViksRoute) RoutesModel {
-	result := RoutesModel{}
+func ListRouteToModel(routes []routers.ViksRoute) ListRoutesModel {
+	result := ListRoutesModel{}
 
 	for _, route := range routes {
-		result.RouteModel = append(result.RouteModel, RouteToModel(route))
+		routeModel := RouteToModel(route)
+		result.RouteModel = append(result.RouteModel, InformationRouteModel{
+			MasterPmNum:    routeModel.MasterPmNum,
+			TripChangeData: routeModel.TripChangeData,
+			TripType:       routeModel.TripType,
+			ViksRouteID:    routeModel.ViksRouteID,
+			Car:            routeModel.Car,
+			CarID:          routeModel.CarID,
+			Description:    routeModel.Description,
+			Eigthnum:       routeModel.Eigthnum,
+		})
 	}
 	return result
 }

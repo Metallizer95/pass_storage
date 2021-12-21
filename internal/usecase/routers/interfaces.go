@@ -16,6 +16,6 @@ type (
 	}
 
 	LoadRoutersUseCase interface {
-		Load() *RoutesModel
+		Load() *ListRoutesModel
 	}
 )

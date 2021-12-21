@@ -54,9 +54,7 @@ func (ctrl *controller) LoadByID(c *gin.Context) {
 
 func (ctrl *controller) LoadAll(c *gin.Context) {
 	result := ctrl.useCases.LoadRouters().Load()
-	for _, k := range result.RouteModel {
-		fmt.Println(k.ViksRouteID)
-	}
+
 	if result == nil {
 		c.XML(http.StatusInternalServerError, nil)
 		return
