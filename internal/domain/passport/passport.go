@@ -11,22 +11,22 @@ type Data struct {
 }
 
 type Header struct {
-	SiteID           int
+	SiteID           string
 	SectionName      string
-	SectionID        int
+	SectionID        string
 	EchName          string
 	EchkName         string
 	Location         string
-	WayAmount        int
-	CurrentWay       int
-	CurrentWayID     int
+	WayAmount        string
+	CurrentWay       string
+	CurrentWayID     string
 	ChangeData       string
-	InitialMeter     int
-	InitialKm        int
-	InitialPk        int
-	InitialM         int
-	PlotLength       int
-	SuspensionAmount int
+	InitialMeter     string
+	InitialKm        string
+	InitialPk        string
+	InitialM         string
+	PlotLength       string
+	SuspensionAmount string
 }
 
 type Towers struct {
@@ -37,24 +37,24 @@ type Tower struct {
 	ID             string
 	AssetNum       string
 	StopSeq        string
-	Km             int
-	Pk             int
-	M              int
+	Km             string
+	Pk             string
+	M              string
 	Type           string
 	Turn           string
-	Radius         int
-	Number         int
-	Distance       int
-	Zigzag         int
-	Height         int
-	Offset         int
-	Grounded       int
-	Speed          int
+	Radius         string
+	Number         string
+	Distance       string
+	Zigzag         string
+	Height         string
+	Offset         string
+	Grounded       string
+	Speed          string
 	SuspensionType string
-	Catenary       int
+	Catenary       string
 	WireType       string
-	CountWire      int
-	Longitude      int
-	Latitude       int
-	Gabarit        int
+	CountWire      string
+	Longitude      string
+	Latitude       string
+	Gabarit        string
 }

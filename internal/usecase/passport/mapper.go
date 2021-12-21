@@ -12,6 +12,10 @@ type Mapper interface {
 type mapper struct {
 }
 
+func NewMapper() Mapper {
+	return &mapper{}
+}
+
 // TODO: how I can copy structures by less code
 
 type TowerMapper interface {

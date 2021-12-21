@@ -2,7 +2,6 @@ package passportstorage
 
 import (
 	"store_server/internal/domain/passport"
-	"strconv"
 )
 
 type RepositoryInMemoryImpl struct {
@@ -15,11 +14,9 @@ func New() *RepositoryInMemoryImpl {
 }
 
 func (r *RepositoryInMemoryImpl) Create(p passport.Data) *passport.Passport {
-	idstr := strconv.Itoa(r.idCounter)
-	defer func() { r.idCounter++ }()
-	r.data[idstr] = p
+	r.data[p.SectionID] = p
 	result := passport.Passport{
-		ID:   idstr,
+		ID:   p.SectionID,
 		Data: p,
 	}
 	return &result

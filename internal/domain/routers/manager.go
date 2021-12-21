@@ -3,7 +3,7 @@ package routers
 type Manager interface {
 	SaveRoute(route ViksRoute) *ViksRoute
 	LoadRouteByID(id string) *ViksRoute
-	LoadRoutes() []*ViksRoute
+	LoadRoutes() []ViksRoute
 	UpdateRoute(route ViksRoute) *ViksRoute
 	DeleteRoute(route ViksRoute) *ViksRoute
 }
@@ -24,7 +24,7 @@ func (mng *manager) LoadRouteByID(id string) *ViksRoute {
 	return mng.repo.Read(id)
 }
 
-func (mng *manager) LoadRoutes() []*ViksRoute {
+func (mng *manager) LoadRoutes() []ViksRoute {
 	return mng.repo.ReadAll()
 }
 

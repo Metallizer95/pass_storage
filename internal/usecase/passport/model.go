@@ -14,22 +14,22 @@ type Model struct {
 
 type Header struct {
 	Text             string `xml:",chardata"`
-	SiteID           int    `xml:"siteID"`
+	SiteID           string `xml:"siteId"`
 	SectionName      string `xml:"sectionName"`
-	SectionID        int    `xml:"sectionID"`
+	SectionID        string `xml:"sectionId"`
 	EchName          string `xml:"echName"`
 	EchkName         string `xml:"echkName"`
 	LocationId       string `xml:"locationId"`
-	WayAmount        int    `xml:"wayAmount"`
-	CurrentWay       int    `xml:"currentWay"`
-	CurrentWayID     int    `xml:"currentWayID"`
+	WayAmount        string `xml:"wayAmount"`
+	CurrentWay       string `xml:"currentWay"`
+	CurrentWayID     string `xml:"currentWayID"`
 	CHANGEDATA       string `xml:"CHANGEDATA"`
-	InitialMeter     int    `xml:"initialMeter"`
-	InitialKm        int    `xml:"initialKm"`
-	InitialPK        int    `xml:"initialPK"`
-	InitialM         int    `xml:"initialM"`
-	PlotLength       int    `xml:"plotLength"`
-	SuspensionAmount int    `xml:"suspensionAmount"`
+	InitialMeter     string `xml:"initialMeter"`
+	InitialKm        string `xml:"initialKM"`
+	InitialPK        string `xml:"initialPK"`
+	InitialM         string `xml:"initialM"`
+	PlotLength       string `xml:"plotLength"`
+	SuspensionAmount string `xml:"suspensionAmount"`
 }
 
 type Towers struct {
@@ -42,24 +42,24 @@ type Tower struct {
 	Idtf           string `xml:"idtf"`
 	AssetNum       string `xml:"assetNum"`
 	StopSeq        string `xml:"stopSeq"`
-	Km             int    `xml:"km"`
-	Pk             int    `xml:"pk"`
-	M              int    `xml:"m"`
+	Km             string `xml:"km"`
+	Pk             string `xml:"pk"`
+	M              string `xml:"m"`
 	TFTYPE         string `xml:"TF_TYPE"`
 	TURN           string `xml:"TURN"`
-	RADIUS         int    `xml:"RADIUS"`
-	Number         int    `xml:"number"`
-	Distance       int    `xml:"distance"`
-	Zigzag         int    `xml:"zigzag"`
-	Height         int    `xml:"height"`
-	Offset         int    `xml:"offset"`
-	Grounded       int    `xml:"grounded"`
-	SPEED          int    `xml:"SPEED"`
+	RADIUS         string `xml:"RADIUS"`
+	Number         string `xml:"number"`
+	Distance       string `xml:"distance"`
+	Zigzag         string `xml:"zigzag"`
+	Height         string `xml:"height"`
+	Offset         string `xml:"offset"`
+	Grounded       string `xml:"grounded"`
+	SPEED          string `xml:"SPEED"`
 	SuspensionType string `xml:"suspensionType"`
-	Catenary       int    `xml:"catenary"`
+	Catenary       string `xml:"catenary"`
 	WireType       string `xml:"WireType"`
-	CountWire      int    `xml:"CountWire"`
-	Longitude      int    `xml:"longitude"`
-	Latitude       int    `xml:"Latitude"`
-	Gabarit        int    `xml:"Gabarit"`
+	CountWire      string `xml:"CountWire"`
+	Longitude      string `xml:"longitude"`
+	Latitude       string `xml:"Latitude"`
+	Gabarit        string `xml:"Gabarit"`
 }

@@ -1,15 +1,13 @@
 package routers
 
 import (
-	"store_server/internal/domain/passport"
 	"store_server/internal/domain/routers"
 )
 
 type useCasesImpl struct {
-	saveRouter           SaveRouterUseCase
-	loadRouterByID       LoadRouterByIDUseCase
-	loadRouters          LoadRoutersUseCase
-	loadPassportsByRoute LoadPassportsByRouteUseCase
+	saveRouter     SaveRouterUseCase
+	loadRouterByID LoadRouterByIDUseCase
+	loadRouters    LoadRoutersUseCase
 }
 
 func NewUseCases(repository routers.Repository) UseCases {
@@ -17,12 +15,10 @@ func NewUseCases(repository routers.Repository) UseCases {
 	saveUC := NewSaveRouterUseCaseImpl(mng)
 	loadRouterByIdUC := NewLoadRouterByID(mng)
 	loadRoutersUC := NewLoadRoutersUseCase(mng)
-	loadPassportsUC := NewLoadPassportByRouteUseCase(mng)
 	return &useCasesImpl{
-		saveRouter:           saveUC,
-		loadRouterByID:       loadRouterByIdUC,
-		loadRouters:          loadRoutersUC,
-		loadPassportsByRoute: loadPassportsUC,
+		saveRouter:     saveUC,
+		loadRouterByID: loadRouterByIdUC,
+		loadRouters:    loadRoutersUC,
 	}
 }
 
@@ -36,10 +32,6 @@ func (uc *useCasesImpl) LoadRouterByID() LoadRouterByIDUseCase {
 
 func (uc *useCasesImpl) LoadRouters() LoadRoutersUseCase {
 	return uc.loadRouters
-}
-
-func (uc *useCasesImpl) LoadPassportsByRoute() LoadPassportsByRouteUseCase {
-	return uc.loadPassportsByRoute
 }
 
 // SaveRouter implementation
@@ -95,17 +87,4 @@ func (l *loadRoutersUseCaseImpl) Load() *RoutesModel {
 
 func NewLoadRoutersUseCase(mng routers.Manager) LoadRoutersUseCase {
 	return &loadRoutersUseCaseImpl{mng: mng}
-}
-
-// LoadPassports implementation
-type loadPassportsByRouteUseCaseImpl struct {
-	mng routers.Manager
-}
-
-func (l *loadPassportsByRouteUseCaseImpl) Load(model RouteModel) []*passport.Passport {
-	return nil
-}
-
-func NewLoadPassportByRouteUseCase(mng routers.Manager) LoadPassportsByRouteUseCase {
-	return &loadPassportsByRouteUseCaseImpl{mng: mng}
 }
