@@ -8,3 +8,5 @@ type PassportsRoute struct {
 	ViksRouteID string
 	Passports   []passport.Passport
 }
+
+// TODO: Remove common entity

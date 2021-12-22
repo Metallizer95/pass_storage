@@ -9,3 +9,5 @@ type (
 		Load(routeid string) *Model
 	}
 )
+
+//TODO: Remove link of Passports and Routes

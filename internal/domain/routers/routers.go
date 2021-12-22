@@ -20,3 +20,5 @@ type Section struct {
 	ChangeData  string
 	WorkType    string
 }
+
+// TODO: Link passport and route by SectionSet. Change SectionSet to passport entity

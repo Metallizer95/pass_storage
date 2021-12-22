@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/signal"
 	commonctrl "store_server/internal/controller/common"
+	"store_server/internal/controller/middleware"
 	"store_server/internal/controller/monitoring"
 	passportctrl "store_server/internal/controller/passport"
 	routescontroller "store_server/internal/controller/routes"
@@ -32,6 +33,7 @@ func Run() {
 	commonUseCase := common.NewUseCases(commonStore)
 
 	//Routing of handler
+	middleware.ApplyMiddleware(handler)
 	passportctrl.NewPassportHandlers(handler, passportUseCases.SavePassport(), passportUseCases.LoadPassport())
 	routescontroller.NewRoutesHandlers(handler, routeUseCase)
 	commonctrl.NewCommonHandler(handler, commonUseCase)

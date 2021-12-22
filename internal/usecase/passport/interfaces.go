@@ -13,6 +13,10 @@ type (
 	LoadPassportUseCase interface {
 		Load(id string) *Model
 	}
+
+	GetTowersUseCase interface {
+		LoadTowers(id string) *Towers
+	}
 )
 
 //TODO: По id паспорта вернуть все опоры участка - метод GET формат json

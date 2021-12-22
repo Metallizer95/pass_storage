@@ -26,6 +26,7 @@ func NewUseCases(repository passport.Repository) UseCases {
 	}
 }
 
+// Save passport implementation
 type savePassportUseCaseImpl struct {
 	mng passport.Manager
 	m   mapper
@@ -43,6 +44,7 @@ func NewSavePassportUseCase(mng passport.Manager, mapperImpl mapper) SavePasspor
 	}
 }
 
+// Load passport implementation
 type loadPassportUseCaseImpl struct {
 	mng passport.Manager
 	m   mapper
@@ -62,4 +64,13 @@ func NewPassportLoadCase(mng passport.Manager, mapperImpl mapper) LoadPassportUs
 		mng: mng,
 		m:   mapperImpl,
 	}
+}
+
+type getTowersUseCaseImpl struct {
+	mng passport.Manager
+	m   mapper
+}
+
+func (g *getTowersUseCaseImpl) LoadTowers(id string) *Towers {
+	return nil
 }
