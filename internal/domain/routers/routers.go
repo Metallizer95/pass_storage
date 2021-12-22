@@ -1,5 +1,7 @@
 package routers
 
+import "store_server/internal/domain/passport"
+
 type ViksRoute struct {
 	MasterPMNum    string
 	TripChangeData string
@@ -9,16 +11,5 @@ type ViksRoute struct {
 	CarID          string
 	Description    string
 	Eigthnum       string
-	SectionSet     []Section
+	SectionSet     []passport.Passport
 }
-
-type Section struct {
-	SiteId      string
-	Sequence    string
-	SectionId   string
-	SectionName string
-	ChangeData  string
-	WorkType    string
-}
-
-// TODO: Link passport and route by SectionSet. Change SectionSet to passport entity

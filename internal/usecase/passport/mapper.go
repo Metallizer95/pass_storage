@@ -5,7 +5,8 @@ import (
 )
 
 type Mapper interface {
-	ToPassport(p Model) *passport.Data
+	ToPassportData(p Model) *passport.Data
+	ToPassport(p Model) *passport.Passport
 	ToPassportModel(p passport.Passport) *Model
 }
 
@@ -23,7 +24,7 @@ type TowerMapper interface {
 	ToTowerModel(p passport.Tower) *Tower
 }
 
-func (m *mapper) ToPassport(p Model) *passport.Data {
+func (m *mapper) ToPassportData(p Model) *passport.Data {
 	var towers passport.Towers
 	for _, t := range p.Towers.Towers {
 		towers.Towers = append(towers.Towers, passport.Tower{
@@ -63,13 +64,15 @@ func (m *mapper) ToPassport(p Model) *passport.Data {
 			WayAmount:        p.Header.WayAmount,
 			CurrentWay:       p.Header.CurrentWay,
 			CurrentWayID:     p.Header.CurrentWayID,
-			ChangeData:       p.Header.CHANGEDATA,
+			ChangeDate:       p.Header.CHANGEDATE,
 			InitialMeter:     p.Header.InitialMeter,
 			InitialKm:        p.Header.InitialKm,
 			InitialPk:        p.Header.InitialPK,
 			InitialM:         p.Header.InitialM,
 			PlotLength:       p.Header.PlotLength,
 			SuspensionAmount: p.Header.SuspensionAmount,
+			Sequence:         p.Header.Sequence,
+			WorkType:         p.Header.WorkType,
 		},
 		Towers: towers,
 	}
@@ -117,14 +120,26 @@ func (m *mapper) ToPassportModel(p passport.Passport) *Model {
 			WayAmount:        h.WayAmount,
 			CurrentWay:       h.CurrentWay,
 			CurrentWayID:     h.CurrentWayID,
-			CHANGEDATA:       h.ChangeData,
+			CHANGEDATE:       h.ChangeDate,
 			InitialMeter:     h.InitialMeter,
 			InitialKm:        h.InitialKm,
 			InitialPK:        h.InitialPk,
 			InitialM:         h.InitialM,
 			PlotLength:       h.PlotLength,
 			SuspensionAmount: h.SuspensionAmount,
+			Sequence:         h.Sequence,
+			WorkType:         h.WorkType,
 		},
 		Towers: towers,
+	}
+}
+
+func (m *mapper) ToPassport(p Model) *passport.Passport {
+	if p.ID == "" {
+		return nil
+	}
+	return &passport.Passport{
+		ID:   p.ID,
+		Data: *m.ToPassportData(p),
 	}
 }

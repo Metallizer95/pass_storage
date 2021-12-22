@@ -1,6 +1,9 @@
 package routers
 
-import "encoding/xml"
+import (
+	"encoding/xml"
+	"store_server/internal/usecase/passport"
+)
 
 // TODO: change response format to zip archive (load from db, squeeze and send to client)
 
@@ -49,4 +52,10 @@ type SectionModel struct {
 	SectionName string `xml:"sectionName"`
 	ChangeData  string `xml:"CHANGEDATE"`
 	WorkType    string `xml:"WorkType"`
+}
+
+type RoutePassportsModel struct {
+	XMLName     xml.Name         `xml:"RoutePassports"`
+	ViksRouteID string           `xml:"VIKSROUTEID"`
+	Passports   []passport.Model `xml:"Passports"`
 }

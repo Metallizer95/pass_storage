@@ -23,13 +23,15 @@ type Header struct {
 	WayAmount        string `xml:"wayAmount"        json:"wayAmount"`
 	CurrentWay       string `xml:"currentWay"       json:"currentWay"`
 	CurrentWayID     string `xml:"currentWayID"     json:"currentWayID"`
-	CHANGEDATA       string `xml:"CHANGEDATA"       json:"CHANGEDATA"`
+	CHANGEDATE       string `xml:"CHANGEDATE"       json:"CHANGEDATE"`
 	InitialMeter     string `xml:"initialMeter"     json:"initialMeter"`
 	InitialKm        string `xml:"initialKM"        json:"initialKM"`
 	InitialPK        string `xml:"initialPK"        json:"initialPK"`
 	InitialM         string `xml:"initialM"         json:"initialM"`
 	PlotLength       string `xml:"plotLength"       json:"plotLength"`
 	SuspensionAmount string `xml:"suspensionAmount" json:"suspensionAmount"`
+	Sequence         string `xml:"Sequence"         json:"Sequence"`
+	WorkType         string `xml:"workType"         json:"workType"`
 }
 
 type Towers struct {

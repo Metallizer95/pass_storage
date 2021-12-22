@@ -19,6 +19,7 @@ func NewRoutesHandlers(handler *gin.Engine, cases routers.UseCases) {
 		gr.POST("save", r.Save)
 		gr.GET("load/:id", r.LoadByID)
 		gr.GET("load/all", r.LoadAll)
+		gr.GET("test/:id", r.GetPassportsByRoute)
 	}
 }
 
@@ -55,6 +56,16 @@ func (ctrl *controller) LoadByID(c *gin.Context) {
 func (ctrl *controller) LoadAll(c *gin.Context) {
 	result := ctrl.useCases.LoadRouters().Load()
 
+	if result == nil {
+		c.XML(http.StatusInternalServerError, nil)
+		return
+	}
+	c.XML(http.StatusOK, result)
+}
+
+func (ctrl *controller) GetPassportsByRoute(c *gin.Context) {
+	routeid := c.Params.ByName("id")
+	result := ctrl.useCases.LoadPassportsByRoute().Load(routeid)
 	if result == nil {
 		c.XML(http.StatusInternalServerError, nil)
 		return

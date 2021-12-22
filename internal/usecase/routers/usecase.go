@@ -1,24 +1,28 @@
 package routers
 
 import (
+	domainpassport "store_server/internal/domain/passport"
 	"store_server/internal/domain/routers"
+	"store_server/internal/usecase/passport"
 )
 
 type useCasesImpl struct {
-	saveRouter     SaveRouterUseCase
-	loadRouterByID LoadRouterByIDUseCase
-	loadRouters    LoadRoutersUseCase
+	saveRouter           SaveRouterUseCase
+	loadRouterByID       LoadRouterByIDUseCase
+	loadRouters          LoadRoutersUseCase
+	loadPassportsByRoute LoadPassportsByRoute
 }
 
-func NewUseCases(repository routers.Repository) UseCases {
-	mng := routers.NewRouteManager(repository)
-	saveUC := NewSaveRouterUseCaseImpl(mng)
+func NewUseCases(mng routers.Manager, passportUseCases passport.UseCases) UseCases {
+	saveUC := NewSaveRouterUseCaseImpl(mng, passportUseCases)
 	loadRouterByIdUC := NewLoadRouterByID(mng)
 	loadRoutersUC := NewLoadRoutersUseCase(mng)
+	loadPassportByRouteUC := newLoadPassportsByRoute(mng)
 	return &useCasesImpl{
-		saveRouter:     saveUC,
-		loadRouterByID: loadRouterByIdUC,
-		loadRouters:    loadRoutersUC,
+		saveRouter:           saveUC,
+		loadRouterByID:       loadRouterByIdUC,
+		loadRouters:          loadRoutersUC,
+		loadPassportsByRoute: loadPassportByRouteUC,
 	}
 }
 
@@ -34,13 +38,31 @@ func (uc *useCasesImpl) LoadRouters() LoadRoutersUseCase {
 	return uc.loadRouters
 }
 
+func (uc *useCasesImpl) LoadPassportsByRoute() LoadPassportsByRoute {
+	return uc.loadPassportsByRoute
+}
+
 // SaveRouter implementation
 type saveRouterUseCaseImpl struct {
-	mng routers.Manager
+	mng              routers.Manager
+	passportUseCases passport.UseCases
 }
 
 func (s *saveRouterUseCaseImpl) Save(route RouteModel) *RouteModel {
-	entity := ModelToRoute(route)
+	var passports []domainpassport.Passport
+	passportMapper := passport.NewMapper()
+	for _, pass := range route.SectionSetModel.Section {
+		pModel := s.passportUseCases.LoadPassport().Load(pass.SectionId)
+
+		if pModel == nil {
+			continue
+		}
+		pModel.Header.WorkType = pass.WorkType
+		pModel.Header.Sequence = pass.Sequence
+		p := passportMapper.ToPassport(*pModel)
+		passports = append(passports, *p)
+	}
+	entity := ModelToRoute(route, passports)
 	response := s.mng.SaveRoute(entity)
 	if response == nil {
 		return nil
@@ -49,8 +71,8 @@ func (s *saveRouterUseCaseImpl) Save(route RouteModel) *RouteModel {
 	return &responseModel
 }
 
-func NewSaveRouterUseCaseImpl(mng routers.Manager) SaveRouterUseCase {
-	return &saveRouterUseCaseImpl{mng: mng}
+func NewSaveRouterUseCaseImpl(mng routers.Manager, passportUseCase passport.UseCases) SaveRouterUseCase {
+	return &saveRouterUseCaseImpl{mng: mng, passportUseCases: passportUseCase}
 }
 
 // LoadRouterByID implementation
@@ -87,4 +109,23 @@ func (l *loadRoutersUseCaseImpl) Load() *ListRoutesModel {
 
 func NewLoadRoutersUseCase(mng routers.Manager) LoadRoutersUseCase {
 	return &loadRoutersUseCaseImpl{mng: mng}
+}
+
+// LoadPassportsByRoute implementation
+
+type loadPassportByRouteImpl struct {
+	mng routers.Manager
+}
+
+func newLoadPassportsByRoute(mng routers.Manager) LoadPassportsByRoute {
+	return &loadPassportByRouteImpl{mng}
+}
+
+func (l *loadPassportByRouteImpl) Load(routeid string) *RoutePassportsModel {
+	route := l.mng.LoadRouteByID(routeid)
+	if route == nil {
+		return nil
+	}
+	result := RouteToRoutePassportsModel(*route)
+	return &result
 }

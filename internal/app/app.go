@@ -5,15 +5,13 @@ import (
 	"github.com/gin-gonic/gin"
 	"os"
 	"os/signal"
-	commonctrl "store_server/internal/controller/common"
 	"store_server/internal/controller/middleware"
 	"store_server/internal/controller/monitoring"
 	passportctrl "store_server/internal/controller/passport"
 	routescontroller "store_server/internal/controller/routes"
-	commonstore "store_server/internal/storage/common"
+	routers2 "store_server/internal/domain/routers"
 	passportstorage "store_server/internal/storage/passport"
 	routestorage "store_server/internal/storage/router"
-	"store_server/internal/usecase/common"
 	"store_server/internal/usecase/passport"
 	"store_server/internal/usecase/routers"
 	"store_server/pkg/httpserver"
@@ -26,17 +24,16 @@ func Run() {
 	// Create repoPassport
 	passportStore := passportstorage.New()
 	routeStore := routestorage.New()
-	commonStore := commonstore.NewRepository(passportStore, routeStore)
-	// Create use-cases
+	// Create manager here
+	//TODO Create use-cases
 	passportUseCases := passport.NewUseCases(passportStore)
-	routeUseCase := routers.NewUseCases(routeStore)
-	commonUseCase := common.NewUseCases(commonStore)
+	routeManager := routers2.NewRouteManager(routeStore)
+	routeUseCase := routers.NewUseCases(routeManager, passportUseCases)
 
 	//Routing of handler
 	middleware.ApplyMiddleware(handler)
 	passportctrl.NewPassportHandlers(handler, passportUseCases.SavePassport(), passportUseCases.LoadPassport())
 	routescontroller.NewRoutesHandlers(handler, routeUseCase)
-	commonctrl.NewCommonHandler(handler, commonUseCase)
 	monitoring.AliveController(handler)
 
 	server := httpserver.New(handler)

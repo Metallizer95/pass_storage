@@ -5,6 +5,7 @@ type (
 		SaveRouter() SaveRouterUseCase
 		LoadRouterByID() LoadRouterByIDUseCase
 		LoadRouters() LoadRoutersUseCase
+		LoadPassportsByRoute() LoadPassportsByRoute
 	}
 
 	SaveRouterUseCase interface {
@@ -17,5 +18,9 @@ type (
 
 	LoadRoutersUseCase interface {
 		Load() *ListRoutesModel
+	}
+
+	LoadPassportsByRoute interface {
+		Load(routeid string) *RoutePassportsModel
 	}
 )

@@ -1,18 +1,31 @@
 package routers
 
 import (
+	domainpassport "store_server/internal/domain/passport"
 	"store_server/internal/domain/routers"
+	"store_server/internal/usecase/passport"
 )
+
+func RouteToRoutePassportsModel(route routers.ViksRoute) RoutePassportsModel {
+	var routePassport RoutePassportsModel
+	passportMapper := passport.NewMapper()
+	routePassport.ViksRouteID = route.ViksRoutedID
+	for _, pass := range route.SectionSet {
+		p := passportMapper.ToPassportModel(pass)
+		routePassport.Passports = append(routePassport.Passports, *p)
+	}
+	return routePassport
+}
 
 func RouteToModel(route routers.ViksRoute) RouteModel {
 	var sectionSet []SectionModel
 	for _, section := range route.SectionSet {
 		s := SectionModel{
-			SiteId:      section.SiteId,
+			SiteId:      section.SiteID,
 			Sequence:    section.Sequence,
-			SectionId:   section.SectionId,
+			SectionId:   section.SectionID,
 			SectionName: section.SectionName,
-			ChangeData:  section.ChangeData,
+			ChangeData:  section.ChangeDate,
 			WorkType:    section.WorkType,
 		}
 		sectionSet = append(sectionSet, s)
@@ -33,19 +46,7 @@ func RouteToModel(route routers.ViksRoute) RouteModel {
 	return model
 }
 
-func ModelToRoute(model RouteModel) routers.ViksRoute {
-	var sectionSet []routers.Section
-	for _, section := range model.SectionSetModel.Section {
-		s := routers.Section{
-			SiteId:      section.SiteId,
-			Sequence:    section.Sequence,
-			SectionId:   section.SectionId,
-			SectionName: section.SectionName,
-			ChangeData:  section.ChangeData,
-			WorkType:    section.WorkType,
-		}
-		sectionSet = append(sectionSet, s)
-	}
+func ModelToRoute(model RouteModel, passports []domainpassport.Passport) routers.ViksRoute {
 	entity := routers.ViksRoute{
 		MasterPMNum:    model.MasterPmNum,
 		TripChangeData: model.TripChangeData,
@@ -55,7 +56,7 @@ func ModelToRoute(model RouteModel) routers.ViksRoute {
 		CarID:          model.CarID,
 		Description:    model.Description,
 		Eigthnum:       model.Eigthnum,
-		SectionSet:     sectionSet,
+		SectionSet:     passports,
 	}
 	return entity
 }

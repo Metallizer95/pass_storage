@@ -33,7 +33,7 @@ type savePassportUseCaseImpl struct {
 }
 
 func (s *savePassportUseCaseImpl) Save(passport Model) *Model {
-	r := s.m.ToPassportModel(*s.mng.SavePassport(*s.m.ToPassport(passport)))
+	r := s.m.ToPassportModel(*s.mng.SavePassport(*s.m.ToPassportData(passport)))
 	return r
 }
 

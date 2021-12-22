@@ -20,13 +20,15 @@ type Header struct {
 	WayAmount        string
 	CurrentWay       string
 	CurrentWayID     string
-	ChangeData       string
+	ChangeDate       string
 	InitialMeter     string
 	InitialKm        string
 	InitialPk        string
 	InitialM         string
 	PlotLength       string
 	SuspensionAmount string
+	WorkType         string
+	Sequence         string
 }
 
 type Towers struct {
