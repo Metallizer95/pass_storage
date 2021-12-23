@@ -8,8 +8,8 @@ type Model struct {
 	XMLName xml.Name    `xml:"SectionCertificate"`
 	Text    string      `xml:",chardata"`
 	ID      string      `xml:"id,omitempty" json:"id,omitempty"`
-	Header  HeaderModel `xml:"HeaderModel" json:"HeaderModel"`
-	Towers  TowersModel `xml:"TowersModel" json:"TowersModel"`
+	Header  HeaderModel `xml:"Header" json:"Header"`
+	Towers  TowersModel `xml:"Towers" json:"Towers"`
 }
 
 type HeaderModel struct {
@@ -37,7 +37,7 @@ type HeaderModel struct {
 type TowersModel struct {
 	Text      string       `xml:",chardata"`
 	SectionID string       `xml:"sectionID,omitempty" json:"sectionID,omitempty"`
-	Towers    []TowerModel `xml:"TowerModel" json:"TowerModel"`
+	Towers    []TowerModel `xml:"Tower" json:"TowerModel"`
 }
 
 type TowerModel struct {
@@ -47,7 +47,7 @@ type TowerModel struct {
 	StopSeq        string `xml:"stopSeq"        json:"stopSeq"`
 	Km             string `xml:"km"             json:"km"`
 	Pk             string `xml:"pk"             json:"pk"`
-	M              string `xml:"mapper"              json:"mapper"`
+	M              string `xml:"mapper"         json:"mapper"`
 	TFTYPE         string `xml:"TF_TYPE"        json:"TF_TYPE"`
 	TURN           string `xml:"TURN"           json:"TURN"`
 	RADIUS         string `xml:"RADIUS"         json:"RADIUS"`
