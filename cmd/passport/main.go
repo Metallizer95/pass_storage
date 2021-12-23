@@ -1,21 +1,18 @@
 package main
 
 import (
+	"io"
+	"os"
 	"store_server/internal/app"
 	"store_server/pkg/logging"
 )
 
 func main() {
 	//init logger
-	_, err := logging.New(logging.INFO, "l.log")
+	_, err := logging.New(logging.INFO, []io.Writer{os.Stdout})
 	if err != nil {
 		panic(err)
 	}
-	log, err := logging.Get()
-	if err != nil {
-		panic(err)
-	}
-	log.Info("I initialized %s", "yeap")
 	app.Run()
 
 }

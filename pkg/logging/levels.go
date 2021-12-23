@@ -1,10 +1,11 @@
 package logging
 
-type Level int
+type Level string
 
 const (
-	DEBUG Level = iota
-	WARNING
-	INFO
-	ERROR
+	DEBUG   Level = "debug"
+	WARNING Level = "warning"
+	INFO    Level = "info"
+	ERROR   Level = "error"
+	FATAL   Level = "fatal"
 )
