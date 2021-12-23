@@ -5,14 +5,14 @@ import (
 )
 
 type Model struct {
-	XMLName xml.Name `xml:"SectionCertificate"`
-	Text    string   `xml:",chardata"`
-	ID      string   `xml:"id,omitempty" json:"id,omitempty"`
-	Header  Header   `xml:"Header" json:"Header"`
-	Towers  Towers   `xml:"Towers" json:"Towers"`
+	XMLName xml.Name    `xml:"SectionCertificate"`
+	Text    string      `xml:",chardata"`
+	ID      string      `xml:"id,omitempty" json:"id,omitempty"`
+	Header  HeaderModel `xml:"HeaderModel" json:"HeaderModel"`
+	Towers  TowersModel `xml:"TowersModel" json:"TowersModel"`
 }
 
-type Header struct {
+type HeaderModel struct {
 	Text             string `xml:",chardata"`
 	SiteID           string `xml:"siteId"           json:"siteId"`
 	SectionName      string `xml:"sectionName"      json:"sectionName"`
@@ -34,19 +34,20 @@ type Header struct {
 	WorkType         string `xml:"workType"         json:"workType"`
 }
 
-type Towers struct {
-	Text   string  `xml:",chardata"`
-	Towers []Tower `xml:"Tower" json:"Tower"`
+type TowersModel struct {
+	Text      string       `xml:",chardata"`
+	SectionID string       `xml:"sectionID,omitempty" json:"sectionID,omitempty"`
+	Towers    []TowerModel `xml:"TowerModel" json:"TowerModel"`
 }
 
-type Tower struct {
+type TowerModel struct {
 	Text           string `xml:",chardata"`
 	Idtf           string `xml:"idtf"           json:"idtf"`
 	AssetNum       string `xml:"assetNum"       json:"assetNum"`
 	StopSeq        string `xml:"stopSeq"        json:"stopSeq"`
 	Km             string `xml:"km"             json:"km"`
 	Pk             string `xml:"pk"             json:"pk"`
-	M              string `xml:"m"              json:"m"`
+	M              string `xml:"mapper"              json:"mapper"`
 	TFTYPE         string `xml:"TF_TYPE"        json:"TF_TYPE"`
 	TURN           string `xml:"TURN"           json:"TURN"`
 	RADIUS         string `xml:"RADIUS"         json:"RADIUS"`

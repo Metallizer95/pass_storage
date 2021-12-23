@@ -8,14 +8,19 @@ import (
 )
 
 type Controller struct {
-	SaveUseCase passport.SavePassportUseCase
-	LoadUseCase passport.LoadPassportUseCase
+	SaveUseCase      passport.SavePassportUseCase
+	LoadUseCase      passport.LoadPassportUseCase
+	GetTowersUseCase passport.GetTowersUseCase
 }
 
 // TODO: use UseCases instead use each use case separately
 
-func NewPassportHandlers(handler *gin.Engine, saveUseCase passport.SavePassportUseCase, LoadUseCase passport.LoadPassportUseCase) {
-	r := Controller{SaveUseCase: saveUseCase, LoadUseCase: LoadUseCase}
+func NewPassportHandlers(handler *gin.Engine, uc passport.UseCases) {
+	r := Controller{
+		SaveUseCase:      uc.SavePassportUseCase(),
+		LoadUseCase:      uc.LoadPassportUseCase(),
+		GetTowersUseCase: uc.GetTowersUseCase(),
+	}
 	gr := handler.Group("/passport")
 	{
 		gr.POST("/", r.SavePassport)
@@ -49,5 +54,12 @@ func (ctrl *Controller) LoadPassport(c *gin.Context) {
 }
 
 func (ctrl *Controller) PassportTowers(c *gin.Context) {
+	passportid := c.Params.ByName("id")
+	towers := ctrl.GetTowersUseCase.LoadTowers(passportid)
+	if towers == nil {
+		c.JSON(http.StatusInternalServerError, nil)
+		return
+	}
 
+	c.JSON(http.StatusOK, towers)
 }

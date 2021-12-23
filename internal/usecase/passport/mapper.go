@@ -8,6 +8,7 @@ type Mapper interface {
 	ToPassportData(p Model) *passport.Data
 	ToPassport(p Model) *passport.Passport
 	ToPassportModel(p passport.Passport) *Model
+	ToTowersModel(p passport.Passport) TowersModel
 }
 
 type mapper struct {
@@ -15,13 +16,6 @@ type mapper struct {
 
 func NewMapper() Mapper {
 	return &mapper{}
-}
-
-// TODO: how I can copy structures by less code
-
-type TowerMapper interface {
-	ToTower(p Tower) *passport.Tower
-	ToTowerModel(p passport.Tower) *Tower
 }
 
 func (m *mapper) ToPassportData(p Model) *passport.Data {
@@ -44,7 +38,7 @@ func (m *mapper) ToPassportData(p Model) *passport.Data {
 			Offset:         t.Offset,
 			Grounded:       t.Grounded,
 			Speed:          t.SPEED,
-			SuspensionType: t.SuspensionType, //TODO: change time to type
+			SuspensionType: t.SuspensionType,
 			Catenary:       t.Catenary,
 			WireType:       t.WireType,
 			CountWire:      t.CountWire,
@@ -79,9 +73,9 @@ func (m *mapper) ToPassportData(p Model) *passport.Data {
 }
 
 func (m *mapper) ToPassportModel(p passport.Passport) *Model {
-	var towers Towers
+	var towers TowersModel
 	for _, t := range p.Towers.Towers {
-		towers.Towers = append(towers.Towers, Tower{
+		towers.Towers = append(towers.Towers, TowerModel{
 			Idtf:           t.ID,
 			AssetNum:       t.AssetNum,
 			StopSeq:        t.StopSeq,
@@ -110,7 +104,7 @@ func (m *mapper) ToPassportModel(p passport.Passport) *Model {
 	h := p.Header
 	return &Model{
 		ID: p.ID,
-		Header: Header{
+		Header: HeaderModel{
 			SiteID:           h.SiteID,
 			SectionName:      h.SectionName,
 			SectionID:        h.SectionID,
@@ -141,5 +135,42 @@ func (m *mapper) ToPassport(p Model) *passport.Passport {
 	return &passport.Passport{
 		ID:   p.ID,
 		Data: *m.ToPassportData(p),
+	}
+}
+
+func (m *mapper) ToTowersModel(p passport.Passport) TowersModel {
+	var result TowersModel
+	for _, t := range p.Towers.Towers {
+		result.Towers = append(result.Towers, ToTowerModel(t))
+	}
+	result.SectionID = p.SectionID
+	return result
+}
+
+func ToTowerModel(m passport.Tower) TowerModel {
+	return TowerModel{
+		Idtf:           m.ID,
+		AssetNum:       m.AssetNum,
+		StopSeq:        m.StopSeq,
+		Km:             m.Km,
+		Pk:             m.Pk,
+		M:              m.M,
+		TFTYPE:         m.Type,
+		TURN:           m.Turn,
+		RADIUS:         m.Radius,
+		Number:         m.Number,
+		Distance:       m.Distance,
+		Zigzag:         m.Zigzag,
+		Height:         m.Height,
+		Offset:         m.Offset,
+		Grounded:       m.Grounded,
+		SPEED:          m.Speed,
+		SuspensionType: m.SuspensionType,
+		Catenary:       m.Catenary,
+		WireType:       m.WireType,
+		CountWire:      m.CountWire,
+		Longitude:      m.Longitude,
+		Latitude:       m.Latitude,
+		Gabarit:        m.Gabarit,
 	}
 }

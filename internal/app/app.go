@@ -32,7 +32,7 @@ func Run() {
 
 	//Routing of handler
 	middleware.ApplyMiddleware(handler)
-	passportctrl.NewPassportHandlers(handler, passportUseCases.SavePassport(), passportUseCases.LoadPassport())
+	passportctrl.NewPassportHandlers(handler, passportUseCases)
 	routescontroller.NewRoutesHandlers(handler, routeUseCase)
 	monitoring.AliveController(handler)
 

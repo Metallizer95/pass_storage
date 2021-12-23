@@ -2,8 +2,9 @@ package passport
 
 type (
 	UseCases interface {
-		SavePassport() SavePassportUseCase
-		LoadPassport() LoadPassportUseCase
+		SavePassportUseCase() SavePassportUseCase
+		LoadPassportUseCase() LoadPassportUseCase
+		GetTowersUseCase() GetTowersUseCase
 	}
 
 	SavePassportUseCase interface {
@@ -15,7 +16,7 @@ type (
 	}
 
 	GetTowersUseCase interface {
-		LoadTowers(id string) *Towers
+		LoadTowers(id string) *TowersModel
 	}
 )
 

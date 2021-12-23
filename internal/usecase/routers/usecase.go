@@ -52,7 +52,7 @@ func (s *saveRouterUseCaseImpl) Save(route RouteModel) *RouteModel {
 	var passports []domainpassport.Passport
 	passportMapper := passport.NewMapper()
 	for _, pass := range route.SectionSetModel.Section {
-		pModel := s.passportUseCases.LoadPassport().Load(pass.SectionId)
+		pModel := s.passportUseCases.LoadPassportUseCase().Load(pass.SectionId)
 
 		if pModel == nil {
 			continue

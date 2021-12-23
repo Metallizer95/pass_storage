@@ -3,51 +3,58 @@ package passport
 import "store_server/internal/domain/passport"
 
 type useCasesImpl struct {
-	saveUseCase SavePassportUseCase
-	loadUseCase LoadPassportUseCase
+	saveUseCase      SavePassportUseCase
+	loadUseCase      LoadPassportUseCase
+	getTowersUseCase GetTowersUseCase
 }
 
-func (u *useCasesImpl) SavePassport() SavePassportUseCase {
+func (u *useCasesImpl) SavePassportUseCase() SavePassportUseCase {
 	return u.saveUseCase
 }
 
-func (u *useCasesImpl) LoadPassport() LoadPassportUseCase {
+func (u *useCasesImpl) LoadPassportUseCase() LoadPassportUseCase {
 	return u.loadUseCase
+}
+
+func (u *useCasesImpl) GetTowersUseCase() GetTowersUseCase {
+	return u.getTowersUseCase
 }
 
 func NewUseCases(repository passport.Repository) UseCases {
 	m := mapper{}
 	mng := passport.NewPassportManager(repository)
-	loadUC := NewPassportLoadCase(mng, m)
-	saveUC := NewSavePassportUseCase(mng, m)
+	loadUC := newPassportLoadCase(mng, m)
+	saveUC := newSavePassportUseCase(mng, m)
+	towersUC := newGetTowerUseCaseImpl(mng, m)
 	return &useCasesImpl{
-		saveUseCase: saveUC,
-		loadUseCase: loadUC,
+		saveUseCase:      saveUC,
+		loadUseCase:      loadUC,
+		getTowersUseCase: towersUC,
 	}
 }
 
 // Save passport implementation
 type savePassportUseCaseImpl struct {
-	mng passport.Manager
-	m   mapper
+	mng    passport.Manager
+	mapper mapper
 }
 
 func (s *savePassportUseCaseImpl) Save(passport Model) *Model {
-	r := s.m.ToPassportModel(*s.mng.SavePassport(*s.m.ToPassportData(passport)))
+	r := s.mapper.ToPassportModel(*s.mng.SavePassport(*s.mapper.ToPassportData(passport)))
 	return r
 }
 
-func NewSavePassportUseCase(mng passport.Manager, mapperImpl mapper) SavePassportUseCase {
+func newSavePassportUseCase(mng passport.Manager, mapperImpl mapper) SavePassportUseCase {
 	return &savePassportUseCaseImpl{
-		mng: mng,
-		m:   mapperImpl,
+		mng:    mng,
+		mapper: mapperImpl,
 	}
 }
 
 // Load passport implementation
 type loadPassportUseCaseImpl struct {
-	mng passport.Manager
-	m   mapper
+	mng    passport.Manager
+	mapper mapper
 }
 
 func (l *loadPassportUseCaseImpl) Load(id string) *Model {
@@ -56,21 +63,30 @@ func (l *loadPassportUseCaseImpl) Load(id string) *Model {
 		return nil
 	}
 
-	return l.m.ToPassportModel(*result)
+	return l.mapper.ToPassportModel(*result)
 }
 
-func NewPassportLoadCase(mng passport.Manager, mapperImpl mapper) LoadPassportUseCase {
+func newPassportLoadCase(mng passport.Manager, mapperImpl mapper) LoadPassportUseCase {
 	return &loadPassportUseCaseImpl{
-		mng: mng,
-		m:   mapperImpl,
+		mng:    mng,
+		mapper: mapperImpl,
 	}
 }
 
 type getTowersUseCaseImpl struct {
-	mng passport.Manager
-	m   mapper
+	mng    passport.Manager
+	mapper mapper
 }
 
-func (g *getTowersUseCaseImpl) LoadTowers(id string) *Towers {
-	return nil
+func (g *getTowersUseCaseImpl) LoadTowers(id string) *TowersModel {
+	p := g.mng.LoadPassportByID(id)
+	if p == nil {
+		return nil
+	}
+	tModel := g.mapper.ToTowersModel(*p)
+	return &tModel
+}
+
+func newGetTowerUseCaseImpl(mng passport.Manager, m mapper) GetTowersUseCase {
+	return &getTowersUseCaseImpl{mng: mng, mapper: m}
 }
