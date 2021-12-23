@@ -9,6 +9,7 @@ import (
 	"store_server/internal/controller/monitoring"
 	passportctrl "store_server/internal/controller/passport"
 	routescontroller "store_server/internal/controller/routes"
+	passport2 "store_server/internal/domain/passport"
 	routersentity "store_server/internal/domain/routers"
 	passportstorage "store_server/internal/storage/passport"
 	routestorage "store_server/internal/storage/router"
@@ -21,8 +22,10 @@ import (
 func Run() {
 	handler := gin.New()
 
+	// Create passports repository, manager and use-cases
 	passportStore := passportstorage.New()
-	passportUseCases := passport.NewUseCases(passportStore)
+	passportManager := passport2.NewPassportManager(passportStore)
+	passportUseCases := passport.NewUseCases(passportManager)
 
 	routeStore := routestorage.New()
 	routeManager := routersentity.NewRouteManager(routeStore)

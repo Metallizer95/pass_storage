@@ -20,9 +20,8 @@ func (u *useCasesImpl) GetTowersUseCase() GetTowersUseCase {
 	return u.getTowersUseCase
 }
 
-func NewUseCases(repository passport.Repository) UseCases {
+func NewUseCases(mng passport.Manager) UseCases {
 	m := mapper{}
-	mng := passport.NewPassportManager(repository)
 	loadUC := newPassportLoadCase(mng, m)
 	saveUC := newSavePassportUseCase(mng, m)
 	towersUC := newGetTowerUseCaseImpl(mng, m)
