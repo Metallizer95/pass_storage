@@ -1,79 +1,45 @@
 package logging
 
 import (
+	"fmt"
 	"github.com/sirupsen/logrus"
 	"io"
+	"io/ioutil"
 	"os"
+	"path"
+	"runtime"
 )
 
-type Logger interface {
-	Debug(msg interface{}, args ...interface{})
-	Warn(msg string, args ...interface{})
-	Info(msg string, args ...interface{})
-	Error(msg error, args ...interface{})
-	Fatal(msg error, args ...interface{})
+var e *logrus.Entry
+
+type Logger struct {
+	*logrus.Entry
 }
 
-type logger struct {
-	logger *logrus.Entry
-}
-
-var glLogger = logger{}
-
-func New(level Level, output []io.Writer) (Logger, error) {
+func New(std bool, output io.Writer) {
 	log := logrus.New()
-	log.SetReportCaller(false)
-	log.SetOutput(os.Stdout)
-	log.SetFormatter(&logrus.TextFormatter{
-		ForceColors:      true,
-		DisableColors:    false,
-		FullTimestamp:    true,
-		CallerPrettyfier: nil,
-	})
-	log.SetLevel(logrus.InfoLevel)
-	glLogger.logger = logrus.NewEntry(log)
-	return &glLogger, nil
+	log.SetReportCaller(true)
+	if std {
+		log.SetOutput(os.Stdout)
+	} else {
+		log.SetOutput(ioutil.Discard)
+	}
+	log.AddHook(&writeHook{Writer: []io.Writer{output}, LogLevels: logrus.AllLevels})
+	log.Formatter = &logrus.TextFormatter{
+		DisableColors: true,
+		FullTimestamp: false,
+		CallerPrettyfier: func(f *runtime.Frame) (string, string) {
+			filename := path.Base(f.File)
+			return fmt.Sprintf("%s:%d", filename, f.Line), fmt.Sprintf("%s()", f.Function)
+		},
+	}
+	log.SetLevel(logrus.TraceLevel)
+	e = logrus.NewEntry(log)
 }
 
-func Get() (Logger, error) {
-	if glLogger.logger == nil {
+func GetLogger() (*Logger, error) {
+	if e == nil {
 		return nil, ErrLoggerNotInitialized
 	}
-	return &glLogger, nil
-}
-
-func (l *logger) Debug(message interface{}, args ...interface{}) {
-	//l.msg(DEBUG, message, args...)
-}
-
-func (l *logger) Info(message string, args ...interface{}) {
-	if len(args) == 0 {
-		l.logger.Info(message)
-	} else {
-		l.logger.Infof(message, args...)
-	}
-}
-
-func (l *logger) Warn(message string, args ...interface{}) {
-	if len(args) == 0 {
-		l.logger.Warn(message)
-	} else {
-		l.logger.Warnf(message, args...)
-	}
-}
-
-func (l *logger) Error(message error, args ...interface{}) {
-	if len(args) == 0 {
-		l.logger.Error(message.Error())
-	} else {
-		l.logger.Errorf(message.Error(), args...)
-	}
-}
-
-func (l *logger) Fatal(message error, args ...interface{}) {
-	if len(args) == 0 {
-		l.logger.Fatal(message.Error())
-	} else {
-		l.logger.Fatalf(message.Error(), args...)
-	}
+	return &Logger{e}, nil
 }

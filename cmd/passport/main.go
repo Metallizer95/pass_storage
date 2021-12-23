@@ -1,7 +1,7 @@
 package main
 
 import (
-	"io"
+	"fmt"
 	"os"
 	"store_server/internal/app"
 	"store_server/pkg/logging"
@@ -9,10 +9,16 @@ import (
 
 func main() {
 	//init logger
-	_, err := logging.New(logging.INFO, []io.Writer{os.Stdout})
+	logFile, err := os.OpenFile("app.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0665)
+	if err != nil {
+		fmt.Println(err)
+	}
+	logging.New(true, logFile)
 	if err != nil {
 		panic(err)
 	}
+	logger, _ := logging.GetLogger()
+	logger.Info("Application was started")
 	app.Run()
 
 }
