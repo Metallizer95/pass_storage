@@ -1,6 +1,8 @@
 package main
 
-import "go.uber.org/dig"
+import (
+	"go.uber.org/dig"
+)
 
 func main() {
 

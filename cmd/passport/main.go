@@ -22,3 +22,5 @@ func main() {
 	app.Run()
 
 }
+
+// TODO: validation of values (Longitude and Latitude)
