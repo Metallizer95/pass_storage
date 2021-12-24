@@ -63,6 +63,6 @@ type TowerModel struct {
 	WireType       string `xml:"WireType"       json:"WireType"`
 	CountWire      string `xml:"CountWire"      json:"CountWire"`
 	Longitude      string `xml:"longitude"      json:"longitude"`
-	Latitude       string `xml:"Latitude"       json:"Latitude"`
+	Latitude       string `xml:"latitude"       json:"latitude"`
 	Gabarit        string `xml:"Gabarit"        json:"Gabarit"`
 }

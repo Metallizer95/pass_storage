@@ -7,12 +7,14 @@ import (
 	"store_server/internal/usecase/errs"
 	"store_server/internal/usecase/passport"
 	"store_server/pkg/logging"
+	"strconv"
 )
 
 type controller struct {
 	SaveUseCase      passport.SavePassportUseCase
 	LoadUseCase      passport.LoadPassportUseCase
 	GetTowersUseCase passport.GetTowersUseCase
+	FindTower        passport.FindTowerByIdAndCoordinateUseCase
 	logger           *logging.Logger
 }
 
@@ -22,6 +24,7 @@ func NewPassportHandlers(handler *gin.Engine, uc passport.UseCases) {
 		SaveUseCase:      uc.SavePassportUseCase(),
 		LoadUseCase:      uc.LoadPassportUseCase(),
 		GetTowersUseCase: uc.GetTowersUseCase(),
+		FindTower:        uc.FindTowerByIdAndCoordinateUseCase(),
 		logger:           logger,
 	}
 	gr := handler.Group("/passport")
@@ -29,6 +32,7 @@ func NewPassportHandlers(handler *gin.Engine, uc passport.UseCases) {
 		gr.POST("/", r.SavePassport)
 		gr.GET("/:id", r.LoadPassport)
 		gr.GET("/:id/towers", r.PassportTowers)
+		gr.GET("/:id/towers/findtower", r.FindTowerByIdAndCoordinate)
 	}
 }
 
@@ -65,7 +69,7 @@ func (ctrl *controller) LoadPassport(c *gin.Context) {
 		return
 	}
 	c.XML(http.StatusOK, p)
-	ctrl.logger.Info("return statusOk")
+	ctrl.logger.Info("return status 200")
 }
 
 func (ctrl *controller) PassportTowers(c *gin.Context) {
@@ -81,5 +85,47 @@ func (ctrl *controller) PassportTowers(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, towers)
-	ctrl.logger.Info("return statusOK")
+	ctrl.logger.Info("return status 200")
+}
+
+func (ctrl *controller) FindTowerByIdAndCoordinate(c *gin.Context) {
+	values := c.Request.URL.Query()
+	ctrl.logger.Info("get request to find tower by coordinate")
+	longitudeString, ok := values["longitude"]
+	if !ok {
+		ctrl.logger.Warn("user did not type longitude parameter")
+		c.XML(http.StatusBadRequest, errs.NewErrModel(ErrNotFindLongitude))
+		return
+	}
+
+	longitude, err := strconv.ParseFloat(longitudeString[0], 64)
+	if err != nil {
+		ctrl.logger.Error(err)
+		c.XML(http.StatusBadRequest, errs.NewErrModel(ErrWrongTypeLongitudeParameter))
+		return
+	}
+
+	latitudeString, ok := values["latitude"]
+	if !ok {
+		ctrl.logger.Info("user did not type latitude parameter")
+		c.XML(http.StatusBadRequest, errs.NewErrModel(ErrNotFindLatitude))
+		return
+	}
+
+	latitude, err := strconv.ParseFloat(latitudeString[0], 64)
+	if err != nil {
+		ctrl.logger.Error(err)
+		c.XML(http.StatusBadRequest, errs.NewErrModel(ErrWrongTypeLatitudeParameter))
+		return
+	}
+
+	passportId := c.Params.ByName("id")
+	tower := ctrl.FindTower.FindTower(passportId, longitude, latitude)
+	if tower == nil {
+		c.XML(http.StatusOK, errs.NewErrModel(errs.ErrObjectNotFound))
+		return
+	}
+
+	c.XML(http.StatusOK, tower)
+	ctrl.logger.Info("return status 200")
 }

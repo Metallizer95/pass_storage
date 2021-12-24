@@ -5,6 +5,7 @@ type (
 		SavePassportUseCase() SavePassportUseCase
 		LoadPassportUseCase() LoadPassportUseCase
 		GetTowersUseCase() GetTowersUseCase
+		FindTowerByIdAndCoordinateUseCase() FindTowerByIdAndCoordinateUseCase
 	}
 
 	SavePassportUseCase interface {
@@ -18,8 +19,11 @@ type (
 	GetTowersUseCase interface {
 		LoadTowers(id string) *TowersModel
 	}
+
+	FindTowerByIdAndCoordinateUseCase interface {
+		FindTower(id string, longitude float64, latitude float64) *TowerModel
+	}
 )
 
-//TODO: По id паспорта вернуть все опоры участка - метод GET формат json
 //TODO: По id участка и координате вернуть ближайшие опоры - метод GET, формат json
 //TODO: По id участка и id опоры вернуть следующую и предыдущую опору - метод GET, формат json

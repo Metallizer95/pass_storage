@@ -5,11 +5,18 @@ import (
 	"strconv"
 )
 
-func (p *Passport) GetTowerByCoordinate(longitude, latitude float64) {
-	minDistance := math.Inf(1)
+type minDistanceTower struct {
+	distance float64
+	tower    Tower
+}
+
+func (p *Passport) GetTowerByCoordinate(longitude, latitude float64) *Tower {
+	minDistance := minDistanceTower{
+		distance: math.Inf(1),
+		tower:    Tower{},
+	}
 	inputPoint := coordinatePoints{x: longitude, y: latitude}
 	for _, tower := range p.Towers.Towers {
-
 		long, err := strconv.ParseFloat(tower.Longitude, 64)
 		if err != nil {
 			continue
@@ -21,11 +28,13 @@ func (p *Passport) GetTowerByCoordinate(longitude, latitude float64) {
 		}
 		c := coordinatePoints{x: long, y: lat}
 		distance := c.findSquareDistance(inputPoint)
-		if distance < minDistance {
-			minDistance = distance
+		if distance < minDistance.distance {
+			minDistance.distance = distance
+			minDistance.tower = tower
 		}
 		// TODO question: Should I exit from loop if distance start increase
 	}
+	return &minDistance.tower
 }
 
 type coordinatePoints struct {

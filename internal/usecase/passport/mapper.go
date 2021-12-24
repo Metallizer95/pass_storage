@@ -9,6 +9,7 @@ type Mapper interface {
 	ToPassport(p Model) *passport.Passport
 	ToPassportModel(p passport.Passport) *Model
 	ToTowersModel(p passport.Passport) TowersModel
+	ToTowerModel(tower passport.Tower) TowerModel
 }
 
 type mapper struct {
@@ -141,36 +142,36 @@ func (m *mapper) ToPassport(p Model) *passport.Passport {
 func (m *mapper) ToTowersModel(p passport.Passport) TowersModel {
 	var result TowersModel
 	for _, t := range p.Towers.Towers {
-		result.Towers = append(result.Towers, ToTowerModel(t))
+		result.Towers = append(result.Towers, m.ToTowerModel(t))
 	}
 	result.SectionID = p.SectionID
 	return result
 }
 
-func ToTowerModel(m passport.Tower) TowerModel {
+func (m *mapper) ToTowerModel(tower passport.Tower) TowerModel {
 	return TowerModel{
-		Idtf:           m.ID,
-		AssetNum:       m.AssetNum,
-		StopSeq:        m.StopSeq,
-		Km:             m.Km,
-		Pk:             m.Pk,
-		M:              m.M,
-		TFTYPE:         m.Type,
-		TURN:           m.Turn,
-		RADIUS:         m.Radius,
-		Number:         m.Number,
-		Distance:       m.Distance,
-		Zigzag:         m.Zigzag,
-		Height:         m.Height,
-		Offset:         m.Offset,
-		Grounded:       m.Grounded,
-		SPEED:          m.Speed,
-		SuspensionType: m.SuspensionType,
-		Catenary:       m.Catenary,
-		WireType:       m.WireType,
-		CountWire:      m.CountWire,
-		Longitude:      m.Longitude,
-		Latitude:       m.Latitude,
-		Gabarit:        m.Gabarit,
+		Idtf:           tower.ID,
+		AssetNum:       tower.AssetNum,
+		StopSeq:        tower.StopSeq,
+		Km:             tower.Km,
+		Pk:             tower.Pk,
+		M:              tower.M,
+		TFTYPE:         tower.Type,
+		TURN:           tower.Turn,
+		RADIUS:         tower.Radius,
+		Number:         tower.Number,
+		Distance:       tower.Distance,
+		Zigzag:         tower.Zigzag,
+		Height:         tower.Height,
+		Offset:         tower.Offset,
+		Grounded:       tower.Grounded,
+		SPEED:          tower.Speed,
+		SuspensionType: tower.SuspensionType,
+		Catenary:       tower.Catenary,
+		WireType:       tower.WireType,
+		CountWire:      tower.CountWire,
+		Longitude:      tower.Longitude,
+		Latitude:       tower.Latitude,
+		Gabarit:        tower.Gabarit,
 	}
 }
