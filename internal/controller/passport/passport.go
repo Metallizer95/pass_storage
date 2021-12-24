@@ -5,18 +5,18 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"store_server/internal/usecase/passport"
+	"store_server/pkg/logging"
 )
 
-type Controller struct {
+type controller struct {
 	SaveUseCase      passport.SavePassportUseCase
 	LoadUseCase      passport.LoadPassportUseCase
 	GetTowersUseCase passport.GetTowersUseCase
+	logger           logging.Logger
 }
 
-// TODO: use UseCases instead use each use case separately
-
 func NewPassportHandlers(handler *gin.Engine, uc passport.UseCases) {
-	r := Controller{
+	r := controller{
 		SaveUseCase:      uc.SavePassportUseCase(),
 		LoadUseCase:      uc.LoadPassportUseCase(),
 		GetTowersUseCase: uc.GetTowersUseCase(),
@@ -29,37 +29,46 @@ func NewPassportHandlers(handler *gin.Engine, uc passport.UseCases) {
 	}
 }
 
-func (ctrl *Controller) SavePassport(c *gin.Context) {
-
+func (ctrl *controller) SavePassport(c *gin.Context) {
 	var request passport.Model
+	ctrl.logger.Info("\nget request to save passport")
+
 	err := c.ShouldBindXML(&request)
 	if err != nil {
-		fmt.Printf("[save passport]: error occurred: %v", err)
+		ctrl.logger.Error(fmt.Sprintf("Could not parse request: %v", err))
 		c.XML(http.StatusBadRequest, nil)
 		return
 	}
 
 	pass := ctrl.SaveUseCase.Save(request)
 	c.XML(http.StatusOK, pass)
+	ctrl.logger.Info("return statusOk")
 }
 
-func (ctrl *Controller) LoadPassport(c *gin.Context) {
-	p := ctrl.LoadUseCase.Load(c.Params.ByName("id"))
+func (ctrl *controller) LoadPassport(c *gin.Context) {
+	passportId := c.Params.ByName("id")
+	ctrl.logger.Infof("\nget request to load passport with id: %s", passportId)
+
+	p := ctrl.LoadUseCase.Load(passportId)
 	if p == nil {
-		fmt.Println("[load passport]: return nil pointer of passport")
+		ctrl.logger.Warnf("there are not passport with id %s in database", passportId)
 		c.XML(http.StatusInternalServerError, nil)
 		return
 	}
 	c.XML(http.StatusOK, p)
+	ctrl.logger.Info("return statusOk")
 }
 
-func (ctrl *Controller) PassportTowers(c *gin.Context) {
-	passportid := c.Params.ByName("id")
-	towers := ctrl.GetTowersUseCase.LoadTowers(passportid)
+func (ctrl *controller) PassportTowers(c *gin.Context) {
+	passportId := c.Params.ByName("id")
+	ctrl.logger.Infof("\nget request to get towers of passport with id %s", passportId)
+	towers := ctrl.GetTowersUseCase.LoadTowers(passportId)
 	if towers == nil {
+		ctrl.logger.Infof("there is not passport with id %s in database", passportId)
 		c.JSON(http.StatusInternalServerError, nil)
 		return
 	}
 
 	c.JSON(http.StatusOK, towers)
+	ctrl.logger.Info("return statusOK")
 }
