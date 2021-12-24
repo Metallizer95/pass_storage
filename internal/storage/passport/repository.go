@@ -14,6 +14,10 @@ func New() *RepositoryInMemoryImpl {
 }
 
 func (r *RepositoryInMemoryImpl) Create(p passport.Data) *passport.Passport {
+	_, ok := r.data[p.SectionID]
+	if ok {
+		return nil
+	}
 	r.data[p.SectionID] = p
 	result := passport.Passport{
 		ID:   p.SectionID,

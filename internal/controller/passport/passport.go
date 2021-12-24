@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"store_server/internal/usecase/errs"
 	"store_server/internal/usecase/passport"
 	"store_server/pkg/logging"
 )
@@ -36,11 +37,16 @@ func (ctrl *controller) SavePassport(c *gin.Context) {
 	err := c.ShouldBindXML(&request)
 	if err != nil {
 		ctrl.logger.Error(fmt.Sprintf("Could not parse request: %v", err))
-		c.XML(http.StatusBadRequest, nil)
+		c.XML(http.StatusBadRequest, errs.NewErrModel(err))
 		return
 	}
 
 	pass := ctrl.SaveUseCase.Save(request)
+	if pass == nil {
+		errResponse := errs.NewErrModel(errs.ErrObjectAlreadyExists)
+		c.XML(http.StatusOK, errResponse)
+		return
+	}
 	c.XML(http.StatusOK, pass)
 	ctrl.logger.Info("return statusOk")
 }
@@ -52,7 +58,8 @@ func (ctrl *controller) LoadPassport(c *gin.Context) {
 	p := ctrl.LoadUseCase.Load(passportId)
 	if p == nil {
 		ctrl.logger.Warnf("there are not passport with id %s in database", passportId)
-		c.XML(http.StatusInternalServerError, nil)
+		errResponse := errs.NewErrModel(errs.ErrObjectNotFound)
+		c.XML(http.StatusOK, errResponse)
 		return
 	}
 	c.XML(http.StatusOK, p)
@@ -62,10 +69,12 @@ func (ctrl *controller) LoadPassport(c *gin.Context) {
 func (ctrl *controller) PassportTowers(c *gin.Context) {
 	passportId := c.Params.ByName("id")
 	ctrl.logger.Infof("\nget request to get towers of passport with id %s", passportId)
+
 	towers := ctrl.GetTowersUseCase.LoadTowers(passportId)
 	if towers == nil {
 		ctrl.logger.Infof("there is not passport with id %s in database", passportId)
-		c.JSON(http.StatusInternalServerError, nil)
+		errResponse := errs.NewErrModel(errs.ErrObjectNotFound)
+		c.JSON(http.StatusOK, errResponse)
 		return
 	}
 

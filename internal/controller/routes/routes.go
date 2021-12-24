@@ -1,10 +1,10 @@
 package routescontroller
 
 import (
-	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"store_server/internal/usecase/errs"
 	"store_server/internal/usecase/routers"
 	"store_server/pkg/logging"
 )
@@ -33,14 +33,14 @@ func (ctrl *controller) Save(c *gin.Context) {
 	err := c.ShouldBindXML(&body)
 	if err != nil {
 		ctrl.logger.Error(err)
-		c.XML(http.StatusBadRequest, nil)
+		c.XML(http.StatusBadRequest, errs.NewErrModel(err))
 		return
 	}
 
 	result := ctrl.useCases.SaveRouter().Save(body)
 	if result == nil {
-		ctrl.logger.Error(errors.New("result is nil"))
-		c.XML(http.StatusInternalServerError, nil)
+		errResponse := errs.NewErrModel(errs.ErrObjectAlreadyExists)
+		c.XML(http.StatusOK, errResponse)
 		return
 	}
 	c.XML(http.StatusOK, result)
@@ -54,7 +54,8 @@ func (ctrl *controller) LoadByID(c *gin.Context) {
 
 	if result == nil {
 		ctrl.logger.Error(fmt.Sprintf("not exist route with id %s", id))
-		c.XML(http.StatusInternalServerError, nil)
+		errResponse := errs.NewErrModel(errs.ErrObjectNotFound)
+		c.XML(http.StatusBadRequest, errResponse)
 		return
 	}
 	c.XML(http.StatusOK, result)
@@ -66,7 +67,8 @@ func (ctrl *controller) LoadAll(c *gin.Context) {
 	ctrl.logger.Infof("\nget query load all")
 	if result == nil {
 		ctrl.logger.Warn("there are not routes in database")
-		c.XML(http.StatusInternalServerError, nil)
+		errResponse := errs.NewErrModel(errs.ErrNotFoundRoutes)
+		c.XML(http.StatusOK, errResponse)
 		return
 	}
 	c.XML(http.StatusOK, result)
@@ -80,7 +82,8 @@ func (ctrl *controller) GetPassportsByRoute(c *gin.Context) {
 	result := ctrl.useCases.LoadPassportsByRoute().Load(routeid)
 	if result == nil {
 		ctrl.logger.Warnf("there is not route with id %s", routeid)
-		c.XML(http.StatusInternalServerError, nil)
+		errResponse := errs.NewErrModel(errs.ErrObjectNotFound)
+		c.XML(http.StatusBadRequest, errResponse)
 		return
 	}
 	c.XML(http.StatusOK, result)

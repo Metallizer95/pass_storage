@@ -13,9 +13,14 @@ func New() *RepositoryInMemoryImpl {
 }
 
 func (r *RepositoryInMemoryImpl) Create(p routers.ViksRoute) *routers.ViksRoute {
+	_, ok := r.data[p.ViksRoutedID]
+	if ok {
+		return nil
+	}
 	r.data[p.ViksRoutedID] = p
 	return &p
 }
+
 func (r *RepositoryInMemoryImpl) Read(id string) *routers.ViksRoute {
 	p, ok := r.data[id]
 	if !ok {
