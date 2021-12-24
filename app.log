@@ -1,0 +1,8 @@
+time="2021-12-24T13:44:22+03:00" level=info msg="Application was started" func="main.go:21" file="main.main()"
+time="2021-12-24T14:11:06+03:00" level=info msg="Application was started" func="main.go:21" file="main.main()"
+time="2021-12-24T14:28:28+03:00" level=info msg="\nget query load all" func="routes.go:67" file="store_server/internal/controller/routes.(*controller).LoadAll()"
+time="2021-12-24T14:28:28+03:00" level=warning msg="there are not routes in database" func="routes.go:69" file="store_server/internal/controller/routes.(*controller).LoadAll()"
+time="2021-12-24T14:31:07+03:00" level=info msg="Application was started" func="main.go:21" file="main.main()"
+time="2021-12-24T14:33:00+03:00" level=info msg="Application was started" func="main.go:21" file="main.main()"
+time="2021-12-24T14:33:03+03:00" level=info msg="get request to load passport with id: 1" func="passport.go:58" file="store_server/internal/controller/passport.(*controller).LoadPassport()"
+time="2021-12-24T14:33:03+03:00" level=warning msg="there are not passport with id 1 in database" func="passport.go:62" file="store_server/internal/controller/passport.(*controller).LoadPassport()"

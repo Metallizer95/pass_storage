@@ -29,7 +29,7 @@ func NewRoutesHandlers(handler *gin.Engine, cases routers.UseCases) {
 
 func (ctrl *controller) Save(c *gin.Context) {
 	var body routers.RouteModel
-	ctrl.logger.Info("\nget query to save route")
+	ctrl.logger.Info("get query to save route")
 	err := c.ShouldBindXML(&body)
 	if err != nil {
 		ctrl.logger.Error(err)
@@ -64,7 +64,7 @@ func (ctrl *controller) LoadByID(c *gin.Context) {
 
 func (ctrl *controller) LoadAll(c *gin.Context) {
 	result := ctrl.useCases.LoadRouters().Load()
-	ctrl.logger.Infof("\nget query load all")
+	ctrl.logger.Infof("get query load all")
 	if result == nil {
 		ctrl.logger.Warn("there are not routes in database")
 		errResponse := errs.NewErrModel(errs.ErrNotFoundRoutes)

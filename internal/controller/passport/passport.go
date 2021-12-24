@@ -13,14 +13,16 @@ type controller struct {
 	SaveUseCase      passport.SavePassportUseCase
 	LoadUseCase      passport.LoadPassportUseCase
 	GetTowersUseCase passport.GetTowersUseCase
-	logger           logging.Logger
+	logger           *logging.Logger
 }
 
 func NewPassportHandlers(handler *gin.Engine, uc passport.UseCases) {
+	logger, _ := logging.GetLogger()
 	r := controller{
 		SaveUseCase:      uc.SavePassportUseCase(),
 		LoadUseCase:      uc.LoadPassportUseCase(),
 		GetTowersUseCase: uc.GetTowersUseCase(),
+		logger:           logger,
 	}
 	gr := handler.Group("/passport")
 	{
@@ -32,7 +34,7 @@ func NewPassportHandlers(handler *gin.Engine, uc passport.UseCases) {
 
 func (ctrl *controller) SavePassport(c *gin.Context) {
 	var request passport.Model
-	ctrl.logger.Info("\nget request to save passport")
+	ctrl.logger.Info("get request to save passport")
 
 	err := c.ShouldBindXML(&request)
 	if err != nil {
@@ -53,7 +55,7 @@ func (ctrl *controller) SavePassport(c *gin.Context) {
 
 func (ctrl *controller) LoadPassport(c *gin.Context) {
 	passportId := c.Params.ByName("id")
-	ctrl.logger.Infof("\nget request to load passport with id: %s", passportId)
+	ctrl.logger.Infof("get request to load passport with id: %s", passportId)
 
 	p := ctrl.LoadUseCase.Load(passportId)
 	if p == nil {
@@ -68,7 +70,7 @@ func (ctrl *controller) LoadPassport(c *gin.Context) {
 
 func (ctrl *controller) PassportTowers(c *gin.Context) {
 	passportId := c.Params.ByName("id")
-	ctrl.logger.Infof("\nget request to get towers of passport with id %s", passportId)
+	ctrl.logger.Infof("get request to get towers of passport with id %s", passportId)
 
 	towers := ctrl.GetTowersUseCase.LoadTowers(passportId)
 	if towers == nil {
