@@ -19,6 +19,7 @@ type Cache struct {
 	items             map[string]Item
 }
 
+
 func New(defaultExpiration time.Duration, cleanupInterval time.Duration) *Cache {
 	items := make(map[string]Item)
 

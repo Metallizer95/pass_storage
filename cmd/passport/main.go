@@ -20,7 +20,6 @@ func main() {
 	logger, _ := logging.GetLogger()
 	logger.Info("Application was started")
 	app.Run()
-
 }
 
 // TODO: validation of values (Longitude and Latitude)
