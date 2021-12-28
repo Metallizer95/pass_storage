@@ -38,10 +38,17 @@ func (r *RepositoryInMemoryImpl) Read(id string) *passport.Passport {
 	if !ok {
 		return nil
 	}
+	cachedData, ok := r.cache.Get(id)
+	if ok {
+		cd := cachedData.(passport.Passport)
+		return &cd
+	}
+
 	result := &passport.Passport{
 		ID:   id,
 		Data: p,
 	}
+	r.cache.Set(id, result, time.Minute*20)
 	return result
 }
 
@@ -60,6 +67,9 @@ func (r *RepositoryInMemoryImpl) Delete(id string) *passport.Passport {
 		return nil
 	}
 	delete(r.data, id)
+
+	_ = r.cache.Delete(id)
+	
 	return &passport.Passport{
 		ID:   id,
 		Data: p,
