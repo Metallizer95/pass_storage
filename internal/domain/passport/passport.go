@@ -32,7 +32,7 @@ type Header struct {
 }
 
 type Towers struct {
-	Towers []Tower
+	Towers map[string]Tower
 }
 
 type Tower struct {
