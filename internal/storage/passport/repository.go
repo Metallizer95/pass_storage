@@ -25,6 +25,7 @@ func (r *RepositoryInMemoryImpl) Create(p passport.Data) *passport.Passport {
 	}
 	return &result
 }
+
 func (r *RepositoryInMemoryImpl) Read(id string) *passport.Passport {
 	p, ok := r.data[id]
 	if !ok {
