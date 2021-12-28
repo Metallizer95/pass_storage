@@ -85,13 +85,30 @@ type getTowersUseCaseImpl struct {
 	mapper Mapper
 }
 
-func (g *getTowersUseCaseImpl) LoadTowers(id string) *TowersModel {
+func (g *getTowersUseCaseImpl) LoadAllTowerByPassportId(id string) *TowersModel {
 	p := g.mng.LoadPassportByID(id)
 	if p == nil {
 		return nil
 	}
-	tModel := g.mapper.ToTowersModel(*p)
+	towers := p.GetAllTowers()
+
+	tModel := g.mapper.ToTowersModel(towers, p.SectionID)
 	return &tModel
+}
+
+func (g *getTowersUseCaseImpl) LoadTowerById(passportId, towerId string) *TowerModel {
+	p := g.mng.LoadPassportByID(passportId)
+	if p == nil {
+		return nil
+	}
+
+	tower := p.GetTowerById(towerId)
+	if tower == nil {
+		return nil
+	}
+
+	towerModel := g.mapper.ToTowerModel(*tower)
+	return &towerModel
 }
 
 func newGetTowerUseCaseImpl(mng passport.Manager, m Mapper) GetTowersUseCase {

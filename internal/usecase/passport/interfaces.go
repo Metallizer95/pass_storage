@@ -17,7 +17,8 @@ type (
 	}
 
 	GetTowersUseCase interface {
-		LoadTowers(id string) *TowersModel
+		LoadAllTowerByPassportId(passportId string) *TowersModel
+		LoadTowerById(passportId, towerId string) *TowerModel
 	}
 
 	FindTowerByIdAndCoordinateUseCase interface {

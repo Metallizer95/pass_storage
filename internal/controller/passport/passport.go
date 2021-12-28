@@ -29,14 +29,15 @@ func NewPassportHandlers(handler *gin.Engine, uc passport.UseCases) {
 	}
 	gr := handler.Group("/passport")
 	{
-		gr.POST("/", r.SavePassport)
-		gr.GET("/:id", r.LoadPassport)
-		gr.GET("/:id/towers", r.PassportTowers)
-		gr.GET("/:id/towers/findtower", r.FindTowerByIdAndCoordinate)
+		gr.POST("/", r.savePassport)
+		gr.GET("/:id", r.loadPassport)
+		gr.GET("/:id/towers", r.passportTowers)
+		gr.GET("/:id/towers/findtower", r.findTowerByIdAndCoordinate)
+		gr.GET("/:passportId/towers/:towerId", r.getPassportTowerById)
 	}
 }
 
-func (ctrl *controller) SavePassport(c *gin.Context) {
+func (ctrl *controller) savePassport(c *gin.Context) {
 	var request passport.Model
 	ctrl.logger.Info("get request to save passport")
 
@@ -57,7 +58,7 @@ func (ctrl *controller) SavePassport(c *gin.Context) {
 	ctrl.logger.Info("return statusOk")
 }
 
-func (ctrl *controller) LoadPassport(c *gin.Context) {
+func (ctrl *controller) loadPassport(c *gin.Context) {
 	passportId := c.Params.ByName("id")
 	ctrl.logger.Infof("get request to load passport with id: %s", passportId)
 
@@ -72,11 +73,11 @@ func (ctrl *controller) LoadPassport(c *gin.Context) {
 	ctrl.logger.Info("return status 200")
 }
 
-func (ctrl *controller) PassportTowers(c *gin.Context) {
+func (ctrl *controller) passportTowers(c *gin.Context) {
 	passportId := c.Params.ByName("id")
 	ctrl.logger.Infof("get request to get towers of passport with id %s", passportId)
 
-	towers := ctrl.GetTowersUseCase.LoadTowers(passportId)
+	towers := ctrl.GetTowersUseCase.LoadAllTowerByPassportId(passportId)
 	if towers == nil {
 		ctrl.logger.Infof("there is not passport with id %s in database", passportId)
 		errResponse := errs.NewErrModel(errs.ErrObjectNotFound)
@@ -88,7 +89,24 @@ func (ctrl *controller) PassportTowers(c *gin.Context) {
 	ctrl.logger.Info("return status 200")
 }
 
-func (ctrl *controller) FindTowerByIdAndCoordinate(c *gin.Context) {
+func (ctrl *controller) getPassportTowerById(c *gin.Context) {
+	passportId := c.Params.ByName("passportId")
+	towerId := c.Params.ByName("towerId")
+
+	ctrl.logger.Infof("request to get tower of passport; passportId: %s, towerId:%s", passportId, towerId)
+
+	result := ctrl.GetTowersUseCase.LoadTowerById(passportId, towerId)
+	if result == nil {
+		c.XML(http.StatusOK, errs.NewErrModel(errs.ErrObjectNotFound))
+		ctrl.logger.Warn("not found object")
+		return
+	}
+
+	c.XML(http.StatusOK, result)
+	ctrl.logger.Info("return status 200")
+}
+
+func (ctrl *controller) findTowerByIdAndCoordinate(c *gin.Context) {
 	values := c.Request.URL.Query()
 	ctrl.logger.Info("get request to find tower by coordinate")
 	longitudeString, ok := values["longitude"]

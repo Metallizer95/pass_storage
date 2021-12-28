@@ -2,15 +2,22 @@ package passportstorage
 
 import (
 	"store_server/internal/domain/passport"
+	"store_server/pkg/cache"
+	"time"
 )
 
 type RepositoryInMemoryImpl struct {
-	data      map[string]passport.Data
-	idCounter int
+	data  map[string]passport.Data
+	cache Cache
 }
 
 func New() *RepositoryInMemoryImpl {
-	return &RepositoryInMemoryImpl{data: make(map[string]passport.Data), idCounter: 0}
+	defaultExpiration := 10 * time.Minute
+	cleanupInterval := 10 * time.Minute
+	return &RepositoryInMemoryImpl{
+		data:  make(map[string]passport.Data),
+		cache: cache.New(defaultExpiration, cleanupInterval),
+	}
 }
 
 func (r *RepositoryInMemoryImpl) Create(p passport.Data) *passport.Passport {

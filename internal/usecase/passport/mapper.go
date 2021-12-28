@@ -8,7 +8,7 @@ type Mapper interface {
 	ToPassportData(p Model) *passport.Data
 	ToPassport(p Model) *passport.Passport
 	ToPassportModel(p passport.Passport) *Model
-	ToTowersModel(p passport.Passport) TowersModel
+	ToTowersModel(p passport.Towers, sectionId string) TowersModel
 	ToTowerModel(tower passport.Tower) TowerModel
 }
 
@@ -139,12 +139,12 @@ func (m *mapper) ToPassport(p Model) *passport.Passport {
 	}
 }
 
-func (m *mapper) ToTowersModel(p passport.Passport) TowersModel {
+func (m *mapper) ToTowersModel(p passport.Towers, sectionId string) TowersModel {
 	var result TowersModel
-	for _, t := range p.Towers.Towers {
+	for _, t := range p.Towers {
 		result.Towers = append(result.Towers, m.ToTowerModel(t))
 	}
-	result.SectionID = p.SectionID
+	result.SectionID = sectionId
 	return result
 }
 
