@@ -10,6 +10,8 @@ type Mapper interface {
 	ToPassportModel(p passport.Passport) *Model
 	ToTowersModel(p passport.Towers, sectionId string) TowersModel
 	ToTowerModel(tower passport.Tower) TowerModel
+	PassportToExpiredModel(p passport.Passport, duration string) ExpiredModel
+	ListExpiredModelToExpiredPassportModel(expireModels []ExpiredModel) ExpiredPassportsModel
 }
 
 type mapper struct {
@@ -22,7 +24,7 @@ func NewMapper() Mapper {
 func (m *mapper) ToPassportData(p Model) *passport.Data {
 	var towers passport.Towers
 	for _, t := range p.Towers.Towers {
-		towers.Towers = append(towers.Towers, passport.Tower{
+		towers.Towers[t.Idtf] = passport.Tower{
 			ID:             t.Idtf,
 			AssetNum:       t.AssetNum,
 			StopSeq:        t.StopSeq,
@@ -46,7 +48,7 @@ func (m *mapper) ToPassportData(p Model) *passport.Data {
 			Longitude:      t.Longitude,
 			Latitude:       t.Latitude,
 			Gabarit:        t.Gabarit,
-		})
+		}
 	}
 	return &passport.Data{
 		Header: passport.Header{
@@ -174,4 +176,20 @@ func (m *mapper) ToTowerModel(tower passport.Tower) TowerModel {
 		Latitude:       tower.Latitude,
 		Gabarit:        tower.Gabarit,
 	}
+}
+
+func (m *mapper) PassportToExpiredModel(p passport.Passport, duration string) ExpiredModel {
+	return ExpiredModel{
+		ID:         p.SectionID,
+		ChangeData: p.ChangeDate,
+		Duration:   duration,
+	}
+}
+
+func (m *mapper) ListExpiredModelToExpiredPassportModel(expireModels []ExpiredModel) ExpiredPassportsModel {
+	var result ExpiredPassportsModel
+	for _, e := range expireModels {
+		result.Passports = append(result.Passports, e)
+	}
+	return result
 }

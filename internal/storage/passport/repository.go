@@ -69,9 +69,20 @@ func (r *RepositoryInMemoryImpl) Delete(id string) *passport.Passport {
 	delete(r.data, id)
 
 	_ = r.cache.Delete(id)
-	
+
 	return &passport.Passport{
 		ID:   id,
 		Data: p,
 	}
+}
+
+func (r *RepositoryInMemoryImpl) ReadAll() []passport.Passport {
+	var result []passport.Passport
+	for k, v := range r.data {
+		result = append(result, passport.Passport{
+			ID:   k,
+			Data: v,
+		})
+	}
+	return result
 }

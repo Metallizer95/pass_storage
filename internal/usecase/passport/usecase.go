@@ -7,6 +7,7 @@ type useCasesImpl struct {
 	loadUseCase                       LoadPassportUseCase
 	getTowersUseCase                  GetTowersUseCase
 	findTowerByIdAndCoordinateUseCase FindTowerByIdAndCoordinateUseCase
+	findExpiredPassportsUseCase       FindExpiredPassportsUseCase
 }
 
 func (u *useCasesImpl) SavePassportUseCase() SavePassportUseCase {
@@ -23,6 +24,10 @@ func (u *useCasesImpl) GetTowersUseCase() GetTowersUseCase {
 
 func (u *useCasesImpl) FindTowerByIdAndCoordinateUseCase() FindTowerByIdAndCoordinateUseCase {
 	return u.findTowerByIdAndCoordinateUseCase
+}
+
+func (u *useCasesImpl) FindExpiredPassportsUseCase() FindExpiredPassportsUseCase {
+	return u.findExpiredPassportsUseCase
 }
 
 func NewUseCases(mng passport.Manager) UseCases {
@@ -133,4 +138,27 @@ func (f findTowerByIdAndCoordinateUseCaseImpl) FindTower(id string, longitude fl
 
 func newFindTowerByIdAndCoordinateUseCase(mng passport.Manager, m Mapper) FindTowerByIdAndCoordinateUseCase {
 	return findTowerByIdAndCoordinateUseCaseImpl{mng, m}
+}
+
+// find expired passports implementation
+type findExpiredPassportsUseCaseImpl struct {
+	mng    passport.Manager
+	mapper Mapper
+}
+
+// TODO: I think it is bad method in incorrect place. Need help of Kot
+
+func (f *findExpiredPassportsUseCaseImpl) FindPassports() ExpiredPassportsModel {
+	passports := f.mng.LoadAll()
+	var result []ExpiredModel
+	for _, p := range passports {
+		if expired, duration := IsExpired(p.ChangeDate); expired {
+			result = append(result, f.mapper.PassportToExpiredModel(p, duration))
+		}
+	}
+	return f.mapper.ListExpiredModelToExpiredPassportModel(result)
+}
+
+func newFindExpiredPassports(mng passport.Manager, m Mapper) FindExpiredPassportsUseCase {
+	return &findExpiredPassportsUseCaseImpl{mng, m}
 }

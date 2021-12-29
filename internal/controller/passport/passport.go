@@ -15,6 +15,7 @@ type controller struct {
 	LoadUseCase      passport.LoadPassportUseCase
 	GetTowersUseCase passport.GetTowersUseCase
 	FindTower        passport.FindTowerByIdAndCoordinateUseCase
+	ExpiredPassports passport.FindExpiredPassportsUseCase
 	logger           *logging.Logger
 }
 
@@ -25,15 +26,17 @@ func NewPassportHandlers(handler *gin.Engine, uc passport.UseCases) {
 		LoadUseCase:      uc.LoadPassportUseCase(),
 		GetTowersUseCase: uc.GetTowersUseCase(),
 		FindTower:        uc.FindTowerByIdAndCoordinateUseCase(),
+		ExpiredPassports: uc.FindExpiredPassportsUseCase(),
 		logger:           logger,
 	}
 	gr := handler.Group("/passport")
 	{
 		gr.POST("/", r.savePassport)
-		gr.GET("/:id", r.loadPassport)
-		gr.GET("/:id/towers", r.passportTowers)
-		gr.GET("/:id/towers/findtower", r.findTowerByIdAndCoordinate)
+		gr.GET("/:passportId", r.loadPassport)
+		gr.GET("/:passportId/towers", r.passportTowers)
+		gr.GET("/:passportId/towers/findtower", r.findTowerByIdAndCoordinate)
 		gr.GET("/:passportId/towers/:towerId", r.getPassportTowerById)
+		gr.GET("/expired", r.findExpiredPassports)
 	}
 }
 
@@ -59,7 +62,7 @@ func (ctrl *controller) savePassport(c *gin.Context) {
 }
 
 func (ctrl *controller) loadPassport(c *gin.Context) {
-	passportId := c.Params.ByName("id")
+	passportId := c.Params.ByName("passportId")
 	ctrl.logger.Infof("get request to load passport with id: %s", passportId)
 
 	p := ctrl.LoadUseCase.Load(passportId)
@@ -74,7 +77,7 @@ func (ctrl *controller) loadPassport(c *gin.Context) {
 }
 
 func (ctrl *controller) passportTowers(c *gin.Context) {
-	passportId := c.Params.ByName("id")
+	passportId := c.Params.ByName("passportId")
 	ctrl.logger.Infof("get request to get towers of passport with id %s", passportId)
 
 	towers := ctrl.GetTowersUseCase.LoadAllTowerByPassportId(passportId)
@@ -137,7 +140,7 @@ func (ctrl *controller) findTowerByIdAndCoordinate(c *gin.Context) {
 		return
 	}
 
-	passportId := c.Params.ByName("id")
+	passportId := c.Params.ByName("passportId")
 	tower := ctrl.FindTower.FindTower(passportId, longitude, latitude)
 	if tower == nil {
 		c.XML(http.StatusOK, errs.NewErrModel(errs.ErrObjectNotFound))
@@ -146,4 +149,8 @@ func (ctrl *controller) findTowerByIdAndCoordinate(c *gin.Context) {
 
 	c.XML(http.StatusOK, tower)
 	ctrl.logger.Info("return status 200")
+}
+
+func (ctrl *controller) findExpiredPassports(c *gin.Context) {
+	c.XML(http.StatusOK, ctrl.ExpiredPassports.FindPassports())
 }

@@ -10,15 +10,11 @@ func (p *Passport) GetAllTowers() Towers {
 }
 
 func (p *Passport) GetTowerById(towerId string) *Tower {
-	var tower *Tower
-	// TODO: How I can do it more faster (change list to map as example)
-	for _, t := range p.Towers.Towers {
-		if t.ID == towerId {
-			tower = &t
-			break
-		}
+	tower, ok := p.Towers.Towers[towerId]
+	if !ok {
+		return nil
 	}
-	return tower
+	return &tower
 }
 
 type minDistanceTower struct {

@@ -4,6 +4,7 @@ type Manager interface {
 	SavePassport(passport Data) *Passport
 	UpdatePassport(passport Passport) *Passport
 	LoadPassportByID(id string) *Passport
+	LoadAll() []Passport
 	DeletePassportByID(id string) *Passport
 }
 
@@ -21,6 +22,10 @@ func (mng *passportManagerImpl) SavePassport(p Data) *Passport {
 
 func (mng *passportManagerImpl) LoadPassportByID(id string) *Passport {
 	return mng.repo.Read(id)
+}
+
+func (mng *passportManagerImpl) LoadAll() []Passport {
+	return mng.repo.ReadAll()
 }
 
 func (mng *passportManagerImpl) UpdatePassport(passport Passport) *Passport {

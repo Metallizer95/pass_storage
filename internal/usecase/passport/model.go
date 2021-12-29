@@ -66,3 +66,17 @@ type TowerModel struct {
 	Latitude       string `xml:"latitude"       json:"latitude"`
 	Gabarit        string `xml:"Gabarit"        json:"Gabarit"`
 }
+
+// TODO: What fields should be
+
+type ExpiredPassportsModel struct {
+	XMLName   xml.Name       `xml:"ExpiredSectionSertificate"`
+	Text      string         `xml:",chardata"`
+	Passports []ExpiredModel `xml:"passports"`
+}
+
+type ExpiredModel struct {
+	ID         string `xml:"id"`
+	ChangeData string `xml:"CHANGEDATE"`
+	Duration   string `xml:"duration"` // TODO: bad name of the field
+}
