@@ -1,4 +1,4 @@
-package passportstorage
+package passportrepo
 
 import (
 	"time"

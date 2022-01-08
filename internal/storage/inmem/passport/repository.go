@@ -2,13 +2,14 @@ package passportstorage
 
 import (
 	"store_server/internal/domain/passport"
+	passportrepo "store_server/internal/storage/mongo/passport"
 	"store_server/pkg/cache"
 	"time"
 )
 
 type RepositoryInMemoryImpl struct {
 	data  map[string]passport.Data
-	cache Cache
+	cache passportrepo.Cache
 }
 
 func New() *RepositoryInMemoryImpl {

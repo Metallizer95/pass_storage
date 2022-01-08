@@ -59,3 +59,4 @@ time="2021-12-24T17:08:47+03:00" level=info msg="get request to find tower by co
 time="2021-12-24T17:08:47+03:00" level=warning msg="user did not type longitude parameter" func="passport.go:96" file="store_server/internal/controller/passport.(*controller).FindTowerByIdAndCoordinate()"
 time="2021-12-29T11:51:04+03:00" level=info msg="Application was started" func="main.go:21" file="main.main()"
 time="2021-12-29T11:52:10+03:00" level=info msg="Application was started" func="main.go:21" file="main.main()"
+time="2021-12-29T17:53:09+03:00" level=info msg="Application was started" func="main.go:21" file="main.main()"
