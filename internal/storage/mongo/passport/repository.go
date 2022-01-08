@@ -1,28 +1,42 @@
 package passportrepo
 
 import (
+	"go.mongodb.org/mongo-driver/mongo"
 	"store_server/internal/domain/passport"
 )
 
-type MongoPassportRepository struct {
+type PassportRepository interface {
+	Create(passport passport.Data) *passport.Passport
+	Read(id string) *passport.Passport
+	ReadAll() []passport.Passport
+	Update(passport passport.Passport) *passport.Passport
 }
 
-func (m *MongoPassportRepository) Create(passport passport.Data) *passport.Passport {
+type passportRepositoryImpl struct {
+	client mongo.Client
+	cache  Cache
+}
+
+func NewPassportRepository(db mongo.Client) PassportRepository {
 	return nil
 }
 
-func (m *MongoPassportRepository) Read(id string) *passport.Passport {
+func (m *passportRepositoryImpl) Create(passport passport.Data) *passport.Passport {
 	return nil
 }
 
-func (m *MongoPassportRepository) ReadAll() []passport.Passport {
+func (m *passportRepositoryImpl) Read(id string) *passport.Passport {
 	return nil
 }
 
-func (m *MongoPassportRepository) Update(passport passport.Passport) *passport.Passport {
+func (m *passportRepositoryImpl) ReadAll() []passport.Passport {
 	return nil
 }
 
-func (m *MongoPassportRepository) Delete(id string) *passport.Passport {
+func (m *passportRepositoryImpl) Update(passport passport.Passport) *passport.Passport {
+	return nil
+}
+
+func (m *passportRepositoryImpl) Delete(id string) *passport.Passport {
 	return nil
 }
