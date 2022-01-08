@@ -27,7 +27,7 @@ func init() {
 	type f struct {
 		D string `json:"D"`
 	}
-	user := bson.D{{"fullName", "User 1"}, {"age", 30}}
+	user := bson.D{{"fullName", "User 2"}, {"age", 31}}
 	r, err := collection.InsertOne(context.TODO(), user)
 	if err != nil {
 		panic(err)
