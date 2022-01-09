@@ -28,6 +28,7 @@ func passportToModel(p passport.Passport) RepositoryModel {
 		Sequence:         p.Sequence,
 	}
 	return RepositoryModel{
+		ID:     header.SectionID,
 		Header: header,
 		Towers: towersModel,
 	}
@@ -60,7 +61,7 @@ func modelToPassport(model RepositoryModel) passport.Passport {
 		Sequence:         model.Header.Sequence,
 	}
 	return passport.Passport{
-		ID: model.Header.SectionID,
+		ID: model.ID,
 		Data: passport.Data{
 			Header: header,
 			Towers: towers,
@@ -121,5 +122,12 @@ func modelToTower(model TowerRepoModel) passport.Tower {
 		Longitude:      model.Longitude,
 		Latitude:       model.Latitude,
 		Gabarit:        model.Gabarit,
+	}
+}
+
+func passportToChangeDateModel(p passport.Passport) ChangeDateCollectionModel {
+	return ChangeDateCollectionModel{
+		PassportID: p.ID,
+		ChangeDate: p.ChangeDate,
 	}
 }

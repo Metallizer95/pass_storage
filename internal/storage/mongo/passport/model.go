@@ -1,6 +1,7 @@
 package passportrepo
 
 type RepositoryModel struct {
+	ID     string           `bson:"id"`
 	Header HeaderRepoModel  `bson:"header"`
 	Towers []TowerRepoModel `bson:"towers"`
 }

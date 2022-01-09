@@ -1,9 +1,12 @@
 package passportrepo
 
 import (
+	"context"
+	"fmt"
 	"go.mongodb.org/mongo-driver/mongo"
 	"store_server/internal/domain/passport"
 	"store_server/pkg/cache"
+	"store_server/pkg/logging"
 	"time"
 )
 
@@ -23,6 +26,7 @@ type PassportRepository interface {
 type passportRepositoryImpl struct {
 	client               mongo.Client
 	cache                Cache
+	logger               *logging.Logger
 	changeDateCollection *mongo.Collection
 	passportCollections  *mongo.Collection
 }
@@ -32,16 +36,40 @@ func NewPassportRepository(db mongo.Client) PassportRepository {
 	cacheCleanUpTime := 10 * time.Minute
 	changeDateCollection := db.Database(DatabaseName).Collection(changeDateCollectionName)
 	passportsCollection := db.Database(DatabaseName).Collection(passportsCollectionName)
+
+	logger, err := logging.GetLogger()
+	if err != nil {
+		panic(fmt.Sprintf("logger is unavailable: %v", err))
+	}
+
 	return &passportRepositoryImpl{
 		client:               db,
 		cache:                cache.New(cacheExpirationTime, cacheCleanUpTime),
+		logger:               logger,
 		changeDateCollection: changeDateCollection,
 		passportCollections:  passportsCollection,
 	}
 }
 
-func (m *passportRepositoryImpl) Create(passport passport.Data) *passport.Passport {
-	return nil
+func (m *passportRepositoryImpl) Create(d passport.Data) *passport.Passport {
+	p := passport.Passport{
+		ID:   d.SectionID,
+		Data: d,
+	}
+	passportModel := passportToModel(p)
+	_, err := m.passportCollections.InsertOne(context.TODO(), passportModel)
+	if err != nil {
+		m.logger.Error(err)
+		return nil
+	}
+
+	changeDataModel := passportToChangeDateModel(p)
+	_, err = m.changeDateCollection.InsertOne(context.TODO(), changeDataModel)
+	if err != nil {
+		m.logger.Error(err)
+		return nil
+	}
+	return &p
 }
 
 func (m *passportRepositoryImpl) Read(id string) *passport.Passport {
