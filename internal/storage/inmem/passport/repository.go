@@ -2,7 +2,7 @@ package passportstorage
 
 import (
 	"store_server/internal/domain/passport"
-	passportrepo "store_server/internal/storage/mongo/passport"
+	passportrepo "store_server/internal/storage/mongorepo/passport"
 	"store_server/pkg/cache"
 	"time"
 )

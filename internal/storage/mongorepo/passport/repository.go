@@ -21,17 +21,18 @@ type PassportRepository interface {
 	Read(id string) *passport.Passport
 	ReadAll() []passport.Passport
 	Update(passport passport.Passport) *passport.Passport
+	Delete(id string) *passport.Passport
 }
 
 type passportRepositoryImpl struct {
-	client               mongo.Client
+	client               *mongo.Client
 	cache                Cache
 	logger               *logging.Logger
 	changeDateCollection *mongo.Collection
 	passportCollections  *mongo.Collection
 }
 
-func NewPassportRepository(db mongo.Client) PassportRepository {
+func NewPassportRepository(db *mongo.Client) PassportRepository {
 	cacheExpirationTime := 10 * time.Minute
 	cacheCleanUpTime := 10 * time.Minute
 	changeDateCollection := db.Database(DatabaseName).Collection(changeDateCollectionName)
@@ -57,14 +58,8 @@ func (m *passportRepositoryImpl) Create(d passport.Data) *passport.Passport {
 		Data: d,
 	}
 	passportModel := passportToModel(p)
-	_, err := m.passportCollections.InsertOne(context.TODO(), passportModel)
-	if err != nil {
-		m.logger.Error(err)
-		return nil
-	}
 
-	changeDataModel := passportToChangeDateModel(p)
-	_, err = m.changeDateCollection.InsertOne(context.TODO(), changeDataModel)
+	_, err := m.passportCollections.InsertOne(context.TODO(), passportModel)
 	if err != nil {
 		m.logger.Error(err)
 		return nil
@@ -73,7 +68,13 @@ func (m *passportRepositoryImpl) Create(d passport.Data) *passport.Passport {
 }
 
 func (m *passportRepositoryImpl) Read(id string) *passport.Passport {
-	return nil
+	p, ok := m.FindByIdPassportCollection(id)
+	if !ok {
+		return nil
+	}
+
+	result := modelToPassport(*p)
+	return &result
 }
 
 func (m *passportRepositoryImpl) ReadAll() []passport.Passport {

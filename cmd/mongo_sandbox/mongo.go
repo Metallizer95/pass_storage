@@ -7,6 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
+	"strings"
 )
 
 var collection *mongo.Collection
@@ -24,23 +25,57 @@ func init() {
 	}
 
 	collection = client.Database("tasker").Collection("tasker")
-	type f struct {
-		D string `json:"D"`
+}
+
+func main() {
+	b := Test{
+		ID:   "1",
+		Name: "Igor",
+		Age:  19,
 	}
-	user := bson.D{{"fullName", "User 2"}, {"age", 31}}
-	r, err := collection.InsertOne(context.TODO(), user)
+	b1 := Test{
+		ID:   "2",
+		Name: "Andrey",
+		Age:  24,
+	}
+
+	res, err := collection.InsertOne(ctx, b)
+
+	if errHandler(err) != nil {
+		fmt.Printf("error occurred: %v", err)
+	}
+	fmt.Println(res)
+
+	res, err = collection.InsertOne(ctx, b1)
+	if errHandler(err) != nil {
+		fmt.Printf("error occurred: %v", err)
+	}
+	fmt.Println(res)
+
+	filter := bson.M{"id": "2"}
+
+	cursor, err := collection.Find(ctx, filter)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(r.InsertedID)
-	cursor, err := collection.Find(context.TODO(), bson.D{})
-	var result []bson.M
-	if err = cursor.All(context.TODO(), &result); err != nil {
+	var result []Test
+	if err := cursor.All(ctx, &result); err != nil {
 		panic(err)
 	}
 	fmt.Println(result)
 }
 
-func main() {
+type Test struct {
+	ID   string `bson:"_id" json:"id"`
+	Name string `json:"name"`
+	Age  int32  `json:"age"`
+}
 
+func errHandler(err error) error {
+	errStr := err.Error()
+	switch {
+	case strings.HasPrefix(errStr, "(DuplicateKey)"):
+		return nil
+	}
+	return err
 }

@@ -5,24 +5,24 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func (pr *passportRepositoryImpl) FindByIdPassportCollection(id string) bool {
+func (pr *passportRepositoryImpl) FindByIdPassportCollection(id string) (*RepositoryModel, bool) {
 	filter := bson.M{"id": id}
 	cursor, err := pr.passportCollections.Find(context.TODO(), filter)
 	if err != nil {
 		pr.logger.Errorf("search passport error: %v", err)
-		return false
+		return nil, false
 	}
 
-	var result []bson.M
+	var result []RepositoryModel
 	if err := cursor.All(context.TODO(), &result); err != nil {
 		pr.logger.Errorf("search passport error: %v", err)
-		return false
+		return nil, false
 	}
 
 	if len(result) > 0 {
-		return true
+		return &result[0], true
 	}
-	return false
+	return nil, false
 }
 
 func (pr *passportRepositoryImpl) FindByIdChangeDateCollection(id string) bool {

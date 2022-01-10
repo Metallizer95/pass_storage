@@ -11,8 +11,8 @@ import (
 	routescontroller "store_server/internal/controller/routes"
 	passport2 "store_server/internal/domain/passport"
 	routersentity "store_server/internal/domain/routers"
-	"store_server/internal/storage/inmem/passport"
 	"store_server/internal/storage/inmem/router"
+	"store_server/internal/storage/mongorepo"
 	"store_server/internal/usecase/passport"
 	"store_server/internal/usecase/routers"
 	"store_server/pkg/httpserver"
@@ -22,9 +22,14 @@ import (
 func Run() {
 	handler := gin.New()
 
+	// Create mongo client
+	repoClient, err := mongorepo.NewClient(nil)
+	if err != nil {
+		panic(err)
+	}
+
 	// Create passports repository, manager and use-cases
-	passportStore := passportstorage.New()
-	passportManager := passport2.NewPassportManager(passportStore)
+	passportManager := passport2.NewPassportManager(repoClient.PassportRepository())
 	passportUseCases := passport.NewUseCases(passportManager)
 
 	routeStore := routestorage.New()
@@ -41,7 +46,6 @@ func Run() {
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
 
-	var err error
 	select {
 	case s := <-interrupt:
 		fmt.Println(s)
