@@ -104,3 +104,8 @@ time="2022-01-10T15:14:47+03:00" level=info msg="get request to load passport wi
 time="2022-01-10T15:16:48+03:00" level=info msg="Application was started" func="main.go:21" file="main.main()"
 time="2022-01-10T15:16:51+03:00" level=info msg="get request to load passport with id: 1" func="passport.go:66" file="store_server/internal/controller/passport.(*controller).loadPassport()"
 time="2022-01-10T15:16:54+03:00" level=info msg="return status 200" func="passport.go:76" file="store_server/internal/controller/passport.(*controller).loadPassport()"
+time="2022-01-10T16:11:16+03:00" level=info msg="Application was started" func="main.go:21" file="main.main()"
+time="2022-01-10T16:11:49+03:00" level=info msg="get request to load passport with id: 1" func="passport.go:66" file="store_server/internal/controller/passport.(*controller).loadPassport()"
+time="2022-01-10T16:11:54+03:00" level=info msg="return status 200" func="passport.go:76" file="store_server/internal/controller/passport.(*controller).loadPassport()"
+time="2022-01-10T16:12:13+03:00" level=info msg="get request to get towers of passport with id 1" func="passport.go:81" file="store_server/internal/controller/passport.(*controller).passportTowers()"
+time="2022-01-10T16:12:13+03:00" level=info msg="return status 200" func="passport.go:92" file="store_server/internal/controller/passport.(*controller).passportTowers()"

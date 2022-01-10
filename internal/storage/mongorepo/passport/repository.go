@@ -69,7 +69,7 @@ func (m *passportRepositoryImpl) Create(d passport.Data) *passport.Passport {
 }
 
 func (m *passportRepositoryImpl) Read(id string) *passport.Passport {
-	p, ok := m.FindByIdPassportCollection(id)
+	p, ok := m.findByIdPassport(id)
 	if !ok {
 		return nil
 	}
@@ -79,13 +79,29 @@ func (m *passportRepositoryImpl) Read(id string) *passport.Passport {
 }
 
 func (m *passportRepositoryImpl) ReadAll() []passport.Passport {
+	passports := m.findAllPassports()
+	var result []passport.Passport
+
+	for _, p := range passports {
+		result = append(result, modelToPassport(p))
+	}
 	return nil
 }
 
-func (m *passportRepositoryImpl) Update(passport passport.Passport) *passport.Passport {
-	return nil
+func (m *passportRepositoryImpl) Update(p passport.Passport) *passport.Passport {
+	passportModel := passportToModel(p)
+	if err := m.updatePassport(passportModel); err != nil {
+		return nil
+	}
+	return &p
 }
 
 func (m *passportRepositoryImpl) Delete(id string) *passport.Passport {
-	return nil
+	result, err := m.deletePassport(id)
+	if err != nil {
+		m.logger.Errorf("delete passport error: %v", err)
+		return nil
+	}
+	p := modelToPassport(*result)
+	return &p
 }
