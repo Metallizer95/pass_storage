@@ -36,6 +36,7 @@ func passportToModel(p passport.Passport) RepositoryModel {
 
 func modelToPassport(model RepositoryModel) passport.Passport {
 	var towers passport.Towers
+	towers.Towers = make(map[string]passport.Tower)
 	for _, t := range model.Towers {
 		towerModel := modelToTower(t)
 		towers.Towers[towerModel.ID] = towerModel

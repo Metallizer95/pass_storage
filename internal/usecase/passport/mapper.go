@@ -1,6 +1,7 @@
 package passport
 
 import (
+	"fmt"
 	"store_server/internal/domain/passport"
 )
 
@@ -23,7 +24,9 @@ func NewMapper() Mapper {
 
 func (m *mapper) ToPassportData(p Model) *passport.Data {
 	var towers passport.Towers
+	towers.Towers = make(map[string]passport.Tower)
 	for _, t := range p.Towers.Towers {
+		fmt.Println(len(p.Towers.Towers))
 		towers.Towers[t.Idtf] = passport.Tower{
 			ID:             t.Idtf,
 			AssetNum:       t.AssetNum,

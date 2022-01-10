@@ -7,6 +7,7 @@ import (
 	"store_server/internal/domain/passport"
 	"store_server/pkg/cache"
 	"store_server/pkg/logging"
+	"strings"
 	"time"
 )
 
@@ -60,7 +61,7 @@ func (m *passportRepositoryImpl) Create(d passport.Data) *passport.Passport {
 	passportModel := passportToModel(p)
 
 	_, err := m.passportCollections.InsertOne(context.TODO(), passportModel)
-	if err != nil {
+	if err != nil && !strings.Contains(err.Error(), "duplicate") {
 		m.logger.Error(err)
 		return nil
 	}

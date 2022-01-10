@@ -6,7 +6,7 @@ import (
 )
 
 func (pr *passportRepositoryImpl) FindByIdPassportCollection(id string) (*RepositoryModel, bool) {
-	filter := bson.M{"id": id}
+	filter := bson.M{"_id": id}
 	cursor, err := pr.passportCollections.Find(context.TODO(), filter)
 	if err != nil {
 		pr.logger.Errorf("search passport error: %v", err)
