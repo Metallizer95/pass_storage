@@ -1,4 +1,4 @@
-package mongorepo
+package dbconf
 
 const (
 	DatabaseName             = "VIKS"

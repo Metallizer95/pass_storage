@@ -4,7 +4,7 @@ import (
 	"context"
 	"go.mongodb.org/mongo-driver/mongo"
 	"store_server/internal/domain/routers"
-	"store_server/internal/storage/mongorepo"
+	"store_server/internal/storage/mongorepo/dbconf"
 	"store_server/pkg/logging"
 	"strings"
 )
@@ -29,7 +29,7 @@ func NewRouteRepository(db *mongo.Client) RouteRepository {
 		panic(err)
 	}
 
-	routeCollection := db.Database(mongorepo.DatabaseName).Collection(mongorepo.RoutesCollectionName)
+	routeCollection := db.Database(dbconf.DatabaseName).Collection(dbconf.RoutesCollectionName)
 
 	return &routeRepositoryImpl{
 		client:          db,
@@ -49,17 +49,46 @@ func (r *routeRepositoryImpl) Create(route routers.ViksRoute) *routers.ViksRoute
 }
 
 func (r *routeRepositoryImpl) Read(id string) *routers.ViksRoute {
-	return nil
+	route, ok := r.findRoute(id)
+	if !ok {
+		return nil
+	}
+	result := repositoryModelToRoute(*route)
+	return &result
 }
 
 func (r *routeRepositoryImpl) ReadAll() []routers.ViksRoute {
-	return nil
+	var resultRoutes []routers.ViksRoute
+	routes := r.findAllRoutes()
+
+	for _, route := range routes {
+		resultRoutes = append(resultRoutes, repositoryModelToRoute(route))
+	}
+
+	return resultRoutes
 }
 
-func (r *routeRepositoryImpl) Update(passport routers.ViksRoute) *routers.ViksRoute {
-	return nil
+func (r *routeRepositoryImpl) Update(route routers.ViksRoute) *routers.ViksRoute {
+	model := routeToRepositoryModel(route)
+
+	updatedModel, err := r.updateRoute(model)
+	if err != nil {
+		return nil
+	}
+
+	result := repositoryModelToRoute(*updatedModel)
+	return &result
 }
 
 func (r *routeRepositoryImpl) Delete(route routers.ViksRoute) *routers.ViksRoute {
-	return nil
+	model := routeToRepositoryModel(route)
+
+	deletedModel, err := r.deleteRoute(model.ID)
+	if err != nil {
+		r.logger.Errorf("delete route error with id %s: %v", model.ID, err)
+		return nil
+	}
+
+	result := repositoryModelToRoute(*deletedModel)
+	return &result
 }
