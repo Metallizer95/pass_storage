@@ -14,12 +14,12 @@ type Config struct {
 
 type Client interface {
 	PassportRepository() passportrepo.PassportRepository
-	RouteRepository() routerepo.RepositoryModel
+	RouteRepository() routerepo.RouteRepository
 }
 
 type repoClient struct {
 	passportRepository passportrepo.PassportRepository
-	routeRepository    routerepo.RepositoryModel
+	routeRepository    routerepo.RouteRepository
 }
 
 func NewClient(cfg *Config) (Client, error) {
@@ -39,7 +39,7 @@ func NewClient(cfg *Config) (Client, error) {
 
 	rc := repoClient{
 		passportRepository: passportrepo.NewPassportRepository(client),
-		routeRepository:    routerepo.RepositoryModel{},
+		routeRepository:    routerepo.NewRouteRepository(client),
 	}
 	return &rc, err
 }
@@ -48,6 +48,6 @@ func (c *repoClient) PassportRepository() passportrepo.PassportRepository {
 	return c.passportRepository
 }
 
-func (c *repoClient) RouteRepository() routerepo.RepositoryModel {
+func (c *repoClient) RouteRepository() routerepo.RouteRepository {
 	return c.routeRepository
 }

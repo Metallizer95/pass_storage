@@ -5,16 +5,11 @@ import (
 	"fmt"
 	"go.mongodb.org/mongo-driver/mongo"
 	"store_server/internal/domain/passport"
+	"store_server/internal/storage/mongorepo"
 	"store_server/pkg/cache"
 	"store_server/pkg/logging"
 	"strings"
 	"time"
-)
-
-const (
-	DatabaseName             = "passport"
-	changeDateCollectionName = "changeDate"
-	passportsCollectionName  = "passports"
 )
 
 type PassportRepository interface {
@@ -36,8 +31,8 @@ type passportRepositoryImpl struct {
 func NewPassportRepository(db *mongo.Client) PassportRepository {
 	cacheExpirationTime := 10 * time.Minute
 	cacheCleanUpTime := 10 * time.Minute
-	changeDateCollection := db.Database(DatabaseName).Collection(changeDateCollectionName)
-	passportsCollection := db.Database(DatabaseName).Collection(passportsCollectionName)
+	changeDateCollection := db.Database(mongorepo.DatabaseName).Collection(mongorepo.ChangeDateCollectionName)
+	passportsCollection := db.Database(mongorepo.DatabaseName).Collection(mongorepo.PassportsCollectionName)
 
 	logger, err := logging.GetLogger()
 	if err != nil {
