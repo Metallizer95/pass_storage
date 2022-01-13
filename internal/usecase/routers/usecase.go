@@ -113,15 +113,16 @@ func NewLoadRoutersUseCase(mng routers.Manager) LoadRoutersUseCase {
 
 // LoadPassportsByRoute implementation
 
-type loadPassportByRouteImpl struct {
+type loadPassportsByRouteImpl struct {
 	mng routers.Manager
 }
 
 func newLoadPassportsByRoute(mng routers.Manager) LoadPassportsByRoute {
-	return &loadPassportByRouteImpl{mng}
+	return &loadPassportsByRouteImpl{mng}
 }
 
-func (l *loadPassportByRouteImpl) Load(routeid string) *RoutePassportsModel {
+func (l *loadPassportsByRouteImpl) Load(routeid string) *RoutePassportsModel {
+	// TODO: Which layer should have responsibility for linking passport and route repos
 	route := l.mng.LoadRouteByID(routeid)
 	if route == nil {
 		return nil

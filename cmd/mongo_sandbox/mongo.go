@@ -7,10 +7,12 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
+	"strconv"
 	"strings"
 )
 
-var collection *mongo.Collection
+var mainCollection *mongo.Collection
+var subCollection *mongo.Collection
 var ctx = context.TODO()
 
 func init() {
@@ -24,57 +26,92 @@ func init() {
 		log.Fatal(err)
 	}
 
-	collection = client.Database("tasker").Collection("tasker")
+	mainCollection = client.Database("tasker").Collection("main")
+	subCollection = client.Database("tasker").Collection("sub")
 }
 
 func main() {
-	b := Test{
-		ID:   "1",
-		Name: "Igor",
-		Age:  19,
+	addresses := createAddresses()
+	for _, address := range addresses {
+		_, err := subCollection.InsertOne(context.TODO(), address)
+		if errHandler(err) != nil {
+			fmt.Println(err)
+		}
 	}
-	b1 := Test{
-		ID:   "2",
-		Name: "Andrey",
-		Age:  24,
+	person := mainStruct{
+		ID:          "1",
+		Name:        "Ivan",
+		Gender:      "Male",
+		City:        "Saint-Petersburg",
+		Country:     "Russia",
+		AddressesID: []string{"1", "3", "4"},
 	}
-
-	res, err := collection.InsertOne(ctx, b)
-
+	_, err := mainCollection.InsertOne(ctx, person)
 	if errHandler(err) != nil {
-		fmt.Printf("error occurred: %v", err)
+		fmt.Println(err)
 	}
-	fmt.Println(res)
 
-	res, err = collection.InsertOne(ctx, b1)
-	if errHandler(err) != nil {
-		fmt.Printf("error occurred: %v", err)
-	}
-	fmt.Println(res)
-
-	filter := bson.M{"id": "2"}
-
-	cursor, err := collection.Find(ctx, filter)
+	filter := bson.M{"_id": "1"}
+	cursor, err := mainCollection.Find(ctx, filter)
 	if err != nil {
 		panic(err)
 	}
-	var result []Test
-	if err := cursor.All(ctx, &result); err != nil {
+
+	var result []mainStruct
+	if err := cursor.All(context.TODO(), &result); err != nil {
 		panic(err)
 	}
-	fmt.Println(result)
+	if len(result) == 0 {
+		panic("There is not result")
+	}
+	filter = bson.M{"_id": bson.M{"$in": result[0].AddressesID}}
+	fmt.Println(filter)
+	subCursor, err := subCollection.Find(ctx, filter)
+	if err != nil {
+		panic(err)
+	}
+	var a []Address
+	if err := subCursor.All(ctx, &a); err != nil {
+		panic(err)
+	}
+	fmt.Println(a)
 }
 
-type Test struct {
-	ID   string `bson:"_id" json:"id"`
-	Name string `json:"name"`
-	Age  int32  `json:"age"`
+func createAddresses() []Address {
+	var result []Address
+	for i := 0; i < 10; i++ {
+		id := strconv.Itoa(i)
+		result = append(result, Address{
+			ID:       id,
+			Street:   "Kolomyazhskiy",
+			Building: id,
+		})
+	}
+	return result
+}
+
+type mainStruct struct {
+	ID          string   `bson:"_id" json:"id"`
+	Name        string   `json:"name"`
+	Gender      string   `json:"gender"`
+	City        string   `json:"city"`
+	Country     string   `json:"country"`
+	AddressesID []string `json:"addresses_id"`
+}
+
+type Address struct {
+	ID       string `bson:"_id" json:"id"`
+	Street   string `json:"street"`
+	Building string `json:"building"`
 }
 
 func errHandler(err error) error {
+	if err == nil {
+		return nil
+	}
 	errStr := err.Error()
 	switch {
-	case strings.HasPrefix(errStr, "(DuplicateKey)"):
+	case strings.Contains(errStr, "duplicate"):
 		return nil
 	}
 	return err

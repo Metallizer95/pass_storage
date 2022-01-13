@@ -69,7 +69,7 @@ func (m *passportRepositoryImpl) Read(id string) *passport.Passport {
 		return nil
 	}
 
-	result := modelToPassport(*p)
+	result := ModelToPassport(*p)
 	return &result
 }
 
@@ -78,7 +78,7 @@ func (m *passportRepositoryImpl) ReadAll() []passport.Passport {
 	var result []passport.Passport
 
 	for _, p := range passports {
-		result = append(result, modelToPassport(p))
+		result = append(result, ModelToPassport(p))
 	}
 	return nil
 }
@@ -97,6 +97,6 @@ func (m *passportRepositoryImpl) Delete(id string) *passport.Passport {
 		m.logger.Errorf("delete passport error: %v", err)
 		return nil
 	}
-	p := modelToPassport(*result)
+	p := ModelToPassport(*result)
 	return &p
 }

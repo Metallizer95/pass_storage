@@ -3,8 +3,10 @@ package routerepo
 import (
 	"context"
 	"go.mongodb.org/mongo-driver/mongo"
+	"store_server/internal/domain/passport"
 	"store_server/internal/domain/routers"
 	"store_server/internal/storage/mongorepo/dbconf"
+	passportrepo "store_server/internal/storage/mongorepo/passport"
 	"store_server/pkg/logging"
 	"strings"
 )
@@ -18,9 +20,10 @@ type RouteRepository interface {
 }
 
 type routeRepositoryImpl struct {
-	client          *mongo.Client
-	logger          *logging.Logger
-	routeCollection *mongo.Collection
+	client             *mongo.Client
+	logger             *logging.Logger
+	routeCollection    *mongo.Collection
+	passportCollection *mongo.Collection
 }
 
 func NewRouteRepository(db *mongo.Client) RouteRepository {
@@ -30,11 +33,13 @@ func NewRouteRepository(db *mongo.Client) RouteRepository {
 	}
 
 	routeCollection := db.Database(dbconf.DatabaseName).Collection(dbconf.RoutesCollectionName)
+	passportCollection := db.Database(dbconf.DatabaseName).Collection(dbconf.PassportsCollectionName)
 
 	return &routeRepositoryImpl{
-		client:          db,
-		logger:          logger,
-		routeCollection: routeCollection,
+		client:             db,
+		logger:             logger,
+		routeCollection:    routeCollection,
+		passportCollection: passportCollection,
 	}
 }
 
@@ -54,6 +59,16 @@ func (r *routeRepositoryImpl) Read(id string) *routers.ViksRoute {
 		return nil
 	}
 	result := repositoryModelToRoute(*route)
+
+	passportsModel, err := r.findRoutePassports(route.Route.SectionSet)
+	if err == nil && len(passportsModel) > 0 {
+		var passports []passport.Passport
+		for _, p := range passportsModel {
+			passports = append(passports, passportrepo.ModelToPassport(p))
+		}
+		result.SectionSet = passports
+	}
+
 	return &result
 }
 

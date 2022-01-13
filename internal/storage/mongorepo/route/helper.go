@@ -3,6 +3,7 @@ package routerepo
 import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
+	passportrepo "store_server/internal/storage/mongorepo/passport"
 )
 
 func (r *routeRepositoryImpl) findRoute(id string) (*repositoryModel, bool) {
@@ -70,4 +71,19 @@ func (r *routeRepositoryImpl) deleteRoute(id string) (*repositoryModel, error) {
 	}
 
 	return &result, nil
+}
+
+func (r *routeRepositoryImpl) findRoutePassports(ids []string) ([]passportrepo.RepositoryModel, error) {
+	filter := bson.M{"_id": bson.M{"$in": ids}}
+
+	cursor, err := r.passportCollection.Find(context.TODO(), filter)
+	if err != nil {
+		return nil, err
+	}
+
+	var result []passportrepo.RepositoryModel
+	if err := cursor.All(context.TODO(), &result); err != nil {
+		return nil, err
+	}
+	return result, nil
 }
