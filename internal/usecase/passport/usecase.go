@@ -73,8 +73,9 @@ func (l *loadPassportUseCaseImpl) Load(id string) *Model {
 	if result == nil {
 		return nil
 	}
-
-	return l.mapper.ToPassportModel(*result)
+	passportModel := l.mapper.ToPassportModel(*result)
+	updateExpiration(passportModel)
+	return passportModel
 }
 
 func newPassportLoadCase(mng passport.Manager, mapperImpl Mapper) LoadPassportUseCase {

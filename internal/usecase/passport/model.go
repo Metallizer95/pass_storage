@@ -5,11 +5,12 @@ import (
 )
 
 type Model struct {
-	XMLName xml.Name    `xml:"SectionCertificate"`
-	Text    string      `xml:",chardata"`
-	ID      string      `xml:"id,omitempty" json:"id,omitempty"`
-	Header  HeaderModel `xml:"Header" json:"Header"`
-	Towers  TowersModel `xml:"Towers" json:"Towers"`
+	XMLName    xml.Name        `xml:"SectionCertificate"`
+	Text       string          `xml:",chardata"`
+	ID         string          `xml:"id,omitempty" json:"id,omitempty"`
+	Header     HeaderModel     `xml:"Header" json:"Header"`
+	Expiration ExpirationModel `xml:"Expiration" json:"Expiration"`
+	Towers     TowersModel     `xml:"Towers" json:"Towers"`
 }
 
 type HeaderModel struct {
@@ -67,7 +68,10 @@ type TowerModel struct {
 	Gabarit        string `xml:"Gabarit"        json:"Gabarit"`
 }
 
-// TODO: What fields should be
+type ExpirationModel struct {
+	DaysUntilExpiration string `xml:"daysUntilExpiration" json:"daysUntilExpiration"`
+	Status              string `xml:"status" json:"status"`
+}
 
 type ExpiredPassportsModel struct {
 	XMLName   xml.Name       `xml:"ExpiredSectionSertificate"`
