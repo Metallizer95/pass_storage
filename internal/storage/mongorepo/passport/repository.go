@@ -64,13 +64,18 @@ func (m *passportRepositoryImpl) Create(d passport.Data) *passport.Passport {
 }
 
 func (m *passportRepositoryImpl) Read(id string) *passport.Passport {
-	p, ok := m.findByIdPassport(id)
+	resultCache, ok := m.cache.Get(id)
 	if !ok {
-		return nil
+		p, ok := m.findByIdPassport(id)
+		if !ok {
+			return nil
+		}
+		result := ModelToPassport(*p)
+		m.cache.Set(result.ID, result, 20*time.Minute)
+		return &result
 	}
-
-	result := ModelToPassport(*p)
-	return &result
+	r := resultCache.(passport.Passport)
+	return &r
 }
 
 func (m *passportRepositoryImpl) ReadAll() []passport.Passport {
