@@ -7,6 +7,11 @@ import (
 	"store_server/pkg/logging"
 )
 
+// @title Passports and Routes of railways store server
+// @version 1.0
+// @description Store server for passports and routes.
+// @host localhost:80
+
 func main() {
 	//init logger
 	logFile, err := os.OpenFile("app.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0665)
