@@ -7,6 +7,10 @@ import (
 	"store_server/internal/usecase/errs"
 	"store_server/internal/usecase/routers"
 	"store_server/pkg/logging"
+
+	_ "github.com/swaggo/files"       // swagger embed files
+	_ "github.com/swaggo/gin-swagger" // gin-swagger middleware
+	_ "store_server/docs"
 )
 
 type controller struct {
@@ -27,6 +31,15 @@ func NewRoutesHandlers(handler *gin.Engine, cases routers.UseCases) {
 	}
 }
 
+// @Summary Save
+// @Tags routes
+// @Description Save route in database
+// @Param input body routers.RouteModel true "xml doc of route"
+// @Success 200 {object} routers.RouteModel
+// @Failure 400 {object} errs.ErrorModel
+// @Failure 500 {object} errs.ErrorModel
+// @Router /route [post]
+
 func (ctrl *controller) Save(c *gin.Context) {
 	var body routers.RouteModel
 	ctrl.logger.Info("get query to save route")
@@ -40,12 +53,20 @@ func (ctrl *controller) Save(c *gin.Context) {
 	result := ctrl.useCases.SaveRouter().Save(body)
 	if result == nil {
 		errResponse := errs.NewErrModel(errs.ErrObjectAlreadyExists)
-		c.XML(http.StatusOK, errResponse)
+		c.XML(http.StatusInternalServerError, errResponse)
 		return
 	}
 	c.XML(http.StatusOK, result)
 	ctrl.logger.Info("return statusOk")
 }
+
+// @Summary GetRouteByID
+// @Tags routes
+// @Description return route object by route id or error if there is not one
+// @Success 200 {object} routers.RouteModel "if there is route with ID"
+// @Success 200 {object} errs.ErrorModel "if there is not route with ID"
+// @Failure 400 {object} errs.ErrorModel
+// @Router /:id [get]
 
 func (ctrl *controller) LoadByID(c *gin.Context) {
 	id := c.Params.ByName("id")
@@ -62,6 +83,13 @@ func (ctrl *controller) LoadByID(c *gin.Context) {
 	ctrl.logger.Info("return statusOk")
 }
 
+// @Summary GetAllRoutes
+// @Tags routes
+// @Description return all routes from database
+// @Success 200 {object} router.RouteModel "if there is route with ID"
+// @Success 200 {object} errs.ErrorModel "if there is not route with ID"
+// @Router /all [get]
+
 func (ctrl *controller) LoadAll(c *gin.Context) {
 	result := ctrl.useCases.LoadRouters().Load()
 	ctrl.logger.Infof("get query load all")
@@ -74,6 +102,14 @@ func (ctrl *controller) LoadAll(c *gin.Context) {
 	c.XML(http.StatusOK, result)
 	ctrl.logger.Info("return statusOk")
 }
+
+// @Summary GetRoutePassports
+// @Tags routes
+// @Description return all passports are belonged the route
+// @Success 200 {object} router.RoutePassportsModel "if there is route with ID"
+// @Success 200 {object} errs.ErrorModel "if there is not route with ID"
+// @Failure 400 {object} errs.ErrorModel
+// @Router /:id/passports [get]
 
 func (ctrl *controller) GetPassportsByRoute(c *gin.Context) {
 	routeid := c.Params.ByName("id")

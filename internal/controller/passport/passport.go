@@ -8,6 +8,10 @@ import (
 	"store_server/internal/usecase/passport"
 	"store_server/pkg/logging"
 	"strconv"
+
+	_ "github.com/swaggo/files"       // swagger embed files
+	_ "github.com/swaggo/gin-swagger" // gin-swagger middleware
+	_ "store_server/docs"
 )
 
 type controller struct {
@@ -40,6 +44,14 @@ func NewPassportHandlers(handler *gin.Engine, uc passport.UseCases) {
 	}
 }
 
+// @Summary SavePassport
+// @Tags passports
+// @Description save passport in database
+// @Param input body passport.Model true "xml structure of passport"
+// @Success 200 {object} passport.Model
+// @Failure 400 {object} errs.ErrorModel
+// @Router /passport [post]
+
 func (ctrl *controller) savePassport(c *gin.Context) {
 	var request passport.Model
 	ctrl.logger.Info("get request to save passport")
@@ -61,6 +73,12 @@ func (ctrl *controller) savePassport(c *gin.Context) {
 	ctrl.logger.Info("return statusOk")
 }
 
+// @Summary GetPassportByID
+// @Tags passports
+// @Description return passport by ID from database if there is one, or return error object with status code 200
+// @Success 200 {object} passport.Model "if there is passport with the ID"
+// @Success 200 {object} errs.ErrorModel "if there is not passport with the ID"
+// @Router /:passportId [get]
 func (ctrl *controller) loadPassport(c *gin.Context) {
 	passportId := c.Params.ByName("passportId")
 	ctrl.logger.Infof("get request to load passport with id: %s", passportId)
@@ -76,6 +94,12 @@ func (ctrl *controller) loadPassport(c *gin.Context) {
 	ctrl.logger.Info("return status 200")
 }
 
+// @Summary GetTowersOfPassport
+// @Tags towers
+// @Description return all towers of passport by id
+// @Success 200 {object} passport.TowersModel "if there is passport with ID"
+// @Success 200 {object} errs.ErrorModel "if there is not passport with ID"
+// @Router /:passportId/towers [get]
 func (ctrl *controller) passportTowers(c *gin.Context) {
 	passportId := c.Params.ByName("passportId")
 	ctrl.logger.Infof("get request to get towers of passport with id %s", passportId)
@@ -92,6 +116,12 @@ func (ctrl *controller) passportTowers(c *gin.Context) {
 	ctrl.logger.Info("return status 200")
 }
 
+// @Summary GetPassportTowerByID
+// @Tags towers
+// @Description return certain tower of the passport by ID
+// @Success 200 {object} passport.TowerModel "if there is passport and tower with ID"
+// @Success 200 {object} errs.ErrorModel "if there is not passport or tower with ID"
+// @Router /:passportId/towers/:towerId [get]
 func (ctrl *controller) getPassportTowerById(c *gin.Context) {
 	passportId := c.Params.ByName("passportId")
 	towerId := c.Params.ByName("towerId")
@@ -109,6 +139,15 @@ func (ctrl *controller) getPassportTowerById(c *gin.Context) {
 	ctrl.logger.Info("return status 200")
 }
 
+// @Summary FindTowerByCoordinate
+// @Tags towers
+// @Description return the closest tower belonged the passport by coordinates
+// @Param latitude query number true "latitude"
+// @Param longitude query number true "longitude"
+// @Success 200 {object} passport.TowerModel
+// @Success 200 {object} errs.ErrorModel
+// @Failure 400 {object} errs.ErrorModel
+// @Router /:passportId/towers/findtower [get]
 func (ctrl *controller) findTowerByIdAndCoordinate(c *gin.Context) {
 	values := c.Request.URL.Query()
 	ctrl.logger.Info("get request to find tower by coordinate")
