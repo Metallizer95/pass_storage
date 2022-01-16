@@ -136,6 +136,101 @@ definitions:
       text:
         type: string
     type: object
+  routers.InformationRouteModel:
+    properties:
+      car:
+        type: string
+      carID:
+        type: string
+      description:
+        type: string
+      eigthnum:
+        type: string
+      masterPmNum:
+        type: string
+      text:
+        type: string
+      tripChangeData:
+        type: string
+      tripType:
+        type: string
+      viksRouteID:
+        type: string
+      xmlname:
+        type: string
+    type: object
+  routers.ListRoutesModel:
+    properties:
+      routeModel:
+        items:
+          $ref: '#/definitions/routers.InformationRouteModel'
+        type: array
+      xmlname:
+        type: string
+    type: object
+  routers.RouteModel:
+    properties:
+      car:
+        type: string
+      carID:
+        type: string
+      description:
+        type: string
+      eigthnum:
+        type: string
+      masterPmNum:
+        type: string
+      sectionSetModel:
+        $ref: '#/definitions/routers.SectionSetModel'
+        type: object
+      text:
+        type: string
+      tripChangeData:
+        type: string
+      tripType:
+        type: string
+      viksRouteID:
+        type: string
+      xmlname:
+        type: string
+    type: object
+  routers.RoutePassportsModel:
+    properties:
+      passports:
+        items:
+          $ref: '#/definitions/passport.Model'
+        type: array
+      viksRouteID:
+        type: string
+      xmlname:
+        type: string
+    type: object
+  routers.SectionModel:
+    properties:
+      changeData:
+        type: string
+      sectionId:
+        type: string
+      sectionName:
+        type: string
+      sequence:
+        type: string
+      siteId:
+        type: string
+      text:
+        type: string
+      workType:
+        type: string
+    type: object
+  routers.SectionSetModel:
+    properties:
+      section:
+        items:
+          $ref: '#/definitions/routers.SectionModel'
+        type: array
+      text:
+        type: string
+    type: object
 host: localhost:80
 info:
   contact: {}
@@ -144,37 +239,102 @@ info:
   title: Passports and Routes of railways store server
   version: "1.0"
 paths:
+  /:id:
+    get:
+      description: return route object by route id or error if there is not one
+      parameters:
+      - description: route ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routers.RouteModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errs.ErrorModel'
+      summary: GetRouteByID
+      tags:
+      - routes
+  /:id/passports:
+    get:
+      description: return all passports are belonged the route
+      parameters:
+      - description: route ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routers.RoutePassportsModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errs.ErrorModel'
+      summary: GetRoutePassports
+      tags:
+      - routes
   /:passportId:
     get:
       description: return passport by ID from database if there is one, or return
         error object with status code 200
+      parameters:
+      - description: passport ID
+        in: path
+        name: passportId
+        required: true
+        type: string
       responses:
         "200":
-          description: if there is not passport with the ID
+          description: OK
           schema:
-            $ref: '#/definitions/errs.ErrorModel'
+            $ref: '#/definitions/passport.Model'
       summary: GetPassportByID
       tags:
       - passports
   /:passportId/towers:
     get:
       description: return all towers of passport by id
+      parameters:
+      - description: passport ID
+        in: path
+        name: passportId
+        required: true
+        type: string
       responses:
         "200":
-          description: if there is not passport with ID
+          description: OK
           schema:
-            $ref: '#/definitions/errs.ErrorModel'
+            $ref: '#/definitions/passport.TowersModel'
       summary: GetTowersOfPassport
       tags:
       - towers
   /:passportId/towers/:towerId:
     get:
       description: return certain tower of the passport by ID
+      parameters:
+      - description: passport ID
+        in: path
+        name: passportId
+        required: true
+        type: string
+      - description: tower ID
+        in: path
+        name: towerId
+        required: true
+        type: string
       responses:
         "200":
-          description: if there is not passport or tower with ID
+          description: OK
           schema:
-            $ref: '#/definitions/errs.ErrorModel'
+            $ref: '#/definitions/passport.TowerModel'
       summary: GetPassportTowerByID
       tags:
       - towers
@@ -196,7 +356,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/errs.ErrorModel'
+            $ref: '#/definitions/passport.TowerModel'
         "400":
           description: Bad Request
           schema:
@@ -204,4 +364,63 @@ paths:
       summary: FindTowerByCoordinate
       tags:
       - towers
+  /all:
+    get:
+      description: return all routes from database
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routers.ListRoutesModel'
+      summary: GetAllRoutes
+      tags:
+      - routes
+  /passport:
+    post:
+      description: save passport in database
+      parameters:
+      - description: xml structure of passport
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/passport.Model'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/passport.Model'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errs.ErrorModel'
+      summary: SavePassport
+      tags:
+      - passports
+  /route:
+    post:
+      description: Save route in database
+      parameters:
+      - description: xml doc of route
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/routers.RouteModel'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routers.RouteModel'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errs.ErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errs.ErrorModel'
+      summary: Save
+      tags:
+      - routes
 swagger: "2.0"

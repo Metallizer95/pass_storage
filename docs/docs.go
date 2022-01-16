@@ -25,6 +25,70 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/:id": {
+            "get": {
+                "description": "return route object by route id or error if there is not one",
+                "tags": [
+                    "routes"
+                ],
+                "summary": "GetRouteByID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "route ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/routers.RouteModel"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errs.ErrorModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/:id/passports": {
+            "get": {
+                "description": "return all passports are belonged the route",
+                "tags": [
+                    "routes"
+                ],
+                "summary": "GetRoutePassports",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "route ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/routers.RoutePassportsModel"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errs.ErrorModel"
+                        }
+                    }
+                }
+            }
+        },
         "/:passportId": {
             "get": {
                 "description": "return passport by ID from database if there is one, or return error object with status code 200",
@@ -32,11 +96,20 @@ var doc = `{
                     "passports"
                 ],
                 "summary": "GetPassportByID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "passport ID",
+                        "name": "passportId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "if there is not passport with the ID",
+                        "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/errs.ErrorModel"
+                            "$ref": "#/definitions/passport.Model"
                         }
                     }
                 }
@@ -49,11 +122,20 @@ var doc = `{
                     "towers"
                 ],
                 "summary": "GetTowersOfPassport",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "passport ID",
+                        "name": "passportId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "if there is not passport with ID",
+                        "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/errs.ErrorModel"
+                            "$ref": "#/definitions/passport.TowersModel"
                         }
                     }
                 }
@@ -66,11 +148,27 @@ var doc = `{
                     "towers"
                 ],
                 "summary": "GetPassportTowerByID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "passport ID",
+                        "name": "passportId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "tower ID",
+                        "name": "towerId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "if there is not passport or tower with ID",
+                        "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/errs.ErrorModel"
+                            "$ref": "#/definitions/passport.TowerModel"
                         }
                     }
                 }
@@ -103,11 +201,102 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/errs.ErrorModel"
+                            "$ref": "#/definitions/passport.TowerModel"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errs.ErrorModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/all": {
+            "get": {
+                "description": "return all routes from database",
+                "tags": [
+                    "routes"
+                ],
+                "summary": "GetAllRoutes",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/routers.ListRoutesModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/passport": {
+            "post": {
+                "description": "save passport in database",
+                "tags": [
+                    "passports"
+                ],
+                "summary": "SavePassport",
+                "parameters": [
+                    {
+                        "description": "xml structure of passport",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/passport.Model"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/passport.Model"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errs.ErrorModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/route": {
+            "post": {
+                "description": "Save route in database",
+                "tags": [
+                    "routes"
+                ],
+                "summary": "Save",
+                "parameters": [
+                    {
+                        "description": "xml doc of route",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/routers.RouteModel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/routers.RouteModel"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errs.ErrorModel"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/errs.ErrorModel"
                         }
@@ -318,6 +507,151 @@ var doc = `{
                 },
                 "sectionID": {
                     "type": "string"
+                },
+                "text": {
+                    "type": "string"
+                }
+            }
+        },
+        "routers.InformationRouteModel": {
+            "type": "object",
+            "properties": {
+                "car": {
+                    "type": "string"
+                },
+                "carID": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "eigthnum": {
+                    "type": "string"
+                },
+                "masterPmNum": {
+                    "type": "string"
+                },
+                "text": {
+                    "type": "string"
+                },
+                "tripChangeData": {
+                    "type": "string"
+                },
+                "tripType": {
+                    "type": "string"
+                },
+                "viksRouteID": {
+                    "type": "string"
+                },
+                "xmlname": {
+                    "type": "string"
+                }
+            }
+        },
+        "routers.ListRoutesModel": {
+            "type": "object",
+            "properties": {
+                "routeModel": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/routers.InformationRouteModel"
+                    }
+                },
+                "xmlname": {
+                    "type": "string"
+                }
+            }
+        },
+        "routers.RouteModel": {
+            "type": "object",
+            "properties": {
+                "car": {
+                    "type": "string"
+                },
+                "carID": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "eigthnum": {
+                    "type": "string"
+                },
+                "masterPmNum": {
+                    "type": "string"
+                },
+                "sectionSetModel": {
+                    "type": "object",
+                    "$ref": "#/definitions/routers.SectionSetModel"
+                },
+                "text": {
+                    "type": "string"
+                },
+                "tripChangeData": {
+                    "type": "string"
+                },
+                "tripType": {
+                    "type": "string"
+                },
+                "viksRouteID": {
+                    "type": "string"
+                },
+                "xmlname": {
+                    "type": "string"
+                }
+            }
+        },
+        "routers.RoutePassportsModel": {
+            "type": "object",
+            "properties": {
+                "passports": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/passport.Model"
+                    }
+                },
+                "viksRouteID": {
+                    "type": "string"
+                },
+                "xmlname": {
+                    "type": "string"
+                }
+            }
+        },
+        "routers.SectionModel": {
+            "type": "object",
+            "properties": {
+                "changeData": {
+                    "type": "string"
+                },
+                "sectionId": {
+                    "type": "string"
+                },
+                "sectionName": {
+                    "type": "string"
+                },
+                "sequence": {
+                    "type": "string"
+                },
+                "siteId": {
+                    "type": "string"
+                },
+                "text": {
+                    "type": "string"
+                },
+                "workType": {
+                    "type": "string"
+                }
+            }
+        },
+        "routers.SectionSetModel": {
+            "type": "object",
+            "properties": {
+                "section": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/routers.SectionModel"
+                    }
                 },
                 "text": {
                     "type": "string"

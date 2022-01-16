@@ -51,7 +51,6 @@ func NewPassportHandlers(handler *gin.Engine, uc passport.UseCases) {
 // @Success 200 {object} passport.Model
 // @Failure 400 {object} errs.ErrorModel
 // @Router /passport [post]
-
 func (ctrl *controller) savePassport(c *gin.Context) {
 	var request passport.Model
 	ctrl.logger.Info("get request to save passport")
@@ -76,8 +75,8 @@ func (ctrl *controller) savePassport(c *gin.Context) {
 // @Summary GetPassportByID
 // @Tags passports
 // @Description return passport by ID from database if there is one, or return error object with status code 200
-// @Success 200 {object} passport.Model "if there is passport with the ID"
-// @Success 200 {object} errs.ErrorModel "if there is not passport with the ID"
+// @Param passportId path string true "passport ID"
+// @Success 200 {object} passport.Model
 // @Router /:passportId [get]
 func (ctrl *controller) loadPassport(c *gin.Context) {
 	passportId := c.Params.ByName("passportId")
@@ -97,8 +96,8 @@ func (ctrl *controller) loadPassport(c *gin.Context) {
 // @Summary GetTowersOfPassport
 // @Tags towers
 // @Description return all towers of passport by id
-// @Success 200 {object} passport.TowersModel "if there is passport with ID"
-// @Success 200 {object} errs.ErrorModel "if there is not passport with ID"
+// @Param passportId path string true "passport ID"
+// @Success 200 {object} passport.TowersModel
 // @Router /:passportId/towers [get]
 func (ctrl *controller) passportTowers(c *gin.Context) {
 	passportId := c.Params.ByName("passportId")
@@ -119,8 +118,9 @@ func (ctrl *controller) passportTowers(c *gin.Context) {
 // @Summary GetPassportTowerByID
 // @Tags towers
 // @Description return certain tower of the passport by ID
-// @Success 200 {object} passport.TowerModel "if there is passport and tower with ID"
-// @Success 200 {object} errs.ErrorModel "if there is not passport or tower with ID"
+// @Param passportId path string true "passport ID"
+// @Param towerId path string true "tower ID"
+// @Success 200 {object} passport.TowerModel
 // @Router /:passportId/towers/:towerId [get]
 func (ctrl *controller) getPassportTowerById(c *gin.Context) {
 	passportId := c.Params.ByName("passportId")
@@ -145,7 +145,6 @@ func (ctrl *controller) getPassportTowerById(c *gin.Context) {
 // @Param latitude query number true "latitude"
 // @Param longitude query number true "longitude"
 // @Success 200 {object} passport.TowerModel
-// @Success 200 {object} errs.ErrorModel
 // @Failure 400 {object} errs.ErrorModel
 // @Router /:passportId/towers/findtower [get]
 func (ctrl *controller) findTowerByIdAndCoordinate(c *gin.Context) {

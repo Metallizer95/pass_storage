@@ -39,7 +39,6 @@ func NewRoutesHandlers(handler *gin.Engine, cases routers.UseCases) {
 // @Failure 400 {object} errs.ErrorModel
 // @Failure 500 {object} errs.ErrorModel
 // @Router /route [post]
-
 func (ctrl *controller) Save(c *gin.Context) {
 	var body routers.RouteModel
 	ctrl.logger.Info("get query to save route")
@@ -63,11 +62,10 @@ func (ctrl *controller) Save(c *gin.Context) {
 // @Summary GetRouteByID
 // @Tags routes
 // @Description return route object by route id or error if there is not one
-// @Success 200 {object} routers.RouteModel "if there is route with ID"
-// @Success 200 {object} errs.ErrorModel "if there is not route with ID"
+// @Param id path string true "route ID"
+// @Success 200 {object} routers.RouteModel
 // @Failure 400 {object} errs.ErrorModel
 // @Router /:id [get]
-
 func (ctrl *controller) LoadByID(c *gin.Context) {
 	id := c.Params.ByName("id")
 	ctrl.logger.Infof("\nget query load route with id: %s", id)
@@ -86,10 +84,8 @@ func (ctrl *controller) LoadByID(c *gin.Context) {
 // @Summary GetAllRoutes
 // @Tags routes
 // @Description return all routes from database
-// @Success 200 {object} router.RouteModel "if there is route with ID"
-// @Success 200 {object} errs.ErrorModel "if there is not route with ID"
+// @Success 200 {object} routers.ListRoutesModel
 // @Router /all [get]
-
 func (ctrl *controller) LoadAll(c *gin.Context) {
 	result := ctrl.useCases.LoadRouters().Load()
 	ctrl.logger.Infof("get query load all")
@@ -106,14 +102,13 @@ func (ctrl *controller) LoadAll(c *gin.Context) {
 // @Summary GetRoutePassports
 // @Tags routes
 // @Description return all passports are belonged the route
-// @Success 200 {object} router.RoutePassportsModel "if there is route with ID"
-// @Success 200 {object} errs.ErrorModel "if there is not route with ID"
+// @Param id path string true "route ID"
+// @Success 200 {object} routers.RoutePassportsModel
 // @Failure 400 {object} errs.ErrorModel
 // @Router /:id/passports [get]
-
 func (ctrl *controller) GetPassportsByRoute(c *gin.Context) {
 	routeid := c.Params.ByName("id")
-	ctrl.logger.Infof("\nget query load passports by route with id %s", routeid)
+	ctrl.logger.Infof("get query load passports by route with id %s", routeid)
 
 	result := ctrl.useCases.LoadPassportsByRoute().Load(routeid)
 	if result == nil {

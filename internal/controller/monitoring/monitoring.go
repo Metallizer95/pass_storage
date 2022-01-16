@@ -13,7 +13,6 @@ import (
 // @Summary Alive
 // @Tags monitoring
 // @Description check server status
-
 func AliveController(handler *gin.Engine) {
 	handler.GET("/health", func(c *gin.Context) {
 		c.Status(http.StatusOK)
