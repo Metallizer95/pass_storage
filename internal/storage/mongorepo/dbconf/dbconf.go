@@ -1,8 +1,8 @@
 package dbconf
 
-const (
-	DatabaseName             = "VIKS"
-	ChangeDateCollectionName = "changeDate"
-	PassportsCollectionName  = "passports"
-	RoutesCollectionName     = "routes"
-)
+type DbConf struct {
+	DatabaseName             string
+	ChangeDateCollectionName string
+	PassportsCollectionName  string
+	RoutesCollectionName     string
+}

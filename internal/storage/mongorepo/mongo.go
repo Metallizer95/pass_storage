@@ -4,6 +4,7 @@ import (
 	"context"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"store_server/internal/storage/mongorepo/dbconf"
 	passportrepo "store_server/internal/storage/mongorepo/passport"
 	routerepo "store_server/internal/storage/mongorepo/route"
 )
@@ -22,6 +23,13 @@ type repoClient struct {
 	routeRepository    routerepo.RouteRepository
 }
 
+const (
+	DatabaseName             = "VIKS"
+	ChangeDateCollectionName = "changeDate"
+	PassportsCollectionName  = "passports"
+	RoutesCollectionName     = "routes"
+)
+
 func NewClient(cfg *Config) (Client, error) {
 	if cfg == nil {
 		cfg = &Config{Path: "mongodb://localhost:27017/"}
@@ -37,9 +45,15 @@ func NewClient(cfg *Config) (Client, error) {
 		return nil, err
 	}
 
+	dbConf := dbconf.DbConf{
+		DatabaseName:             DatabaseName,
+		ChangeDateCollectionName: ChangeDateCollectionName,
+		PassportsCollectionName:  PassportsCollectionName,
+		RoutesCollectionName:     RoutesCollectionName,
+	}
 	rc := repoClient{
-		passportRepository: passportrepo.NewPassportRepository(client),
-		routeRepository:    routerepo.NewRouteRepository(client),
+		passportRepository: passportrepo.NewPassportRepository(client, dbConf),
+		routeRepository:    routerepo.NewRouteRepository(client, dbConf),
 	}
 	return &rc, err
 }

@@ -1,0 +1,28 @@
+<VIKSROUTE MASTERPMNUM="pm00000" TripCHANGEDATE="22.03.2020 09:03:24" TripType="Рабочая" VIKSROUTEID="1356" car="ВИКС №464К (01872464)" carID="A27393164" description="Москва Казанская - Черусти с 3 на 2 путь" eightnum="01872464">
+    <SectionSet>
+        <Section>
+            <siteId>17</siteId>
+            <SEQUENCE>1</SEQUENCE>
+            <sectionId>1</sectionId>
+            <sectionName>МОСКВА-ПАССАЖИРСКАЯ-КАЗАНСКАЯ 1П</sectionName>
+            <CHANGEDATE>22.01.2020 09:13:10</CHANGEDATE>
+            <WorkType>Рабочий</WorkType>
+        </Section>
+        <Section>
+            <siteId>17</siteId>
+            <SEQUENCE>2</SEQUENCE>
+            <sectionId>2</sectionId>
+            <sectionName>МОСКВА-ПАССАЖИРСКАЯ-КАЗАНСКАЯ 2П</sectionName>
+            <CHANGEDATE>22.01.2020 09:14:13</CHANGEDATE>
+            <WorkType>Рабочий</WorkType>
+        </Section>
+        <Section>
+            <siteId>17</siteId>
+            <SEQUENCE>3</SEQUENCE>
+            <sectionId>3</sectionId>
+            <sectionName>МОСКВА-ПАССАЖИРСКАЯ-КАЗАНСКАЯ 3П</sectionName>
+            <CHANGEDATE>22.01.2020 09:14:50</CHANGEDATE>
+            <WorkType>Рабочий</WorkType>
+        </Section>
+    </SectionSet>
+</VIKSROUTE>

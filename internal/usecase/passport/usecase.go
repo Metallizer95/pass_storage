@@ -1,6 +1,8 @@
 package passport
 
-import "store_server/internal/domain/passport"
+import (
+	"store_server/internal/domain/passport"
+)
 
 type useCasesImpl struct {
 	saveUseCase                       SavePassportUseCase
@@ -51,7 +53,11 @@ type savePassportUseCaseImpl struct {
 }
 
 func (s *savePassportUseCaseImpl) Save(passport Model) *Model {
-	r := s.mapper.ToPassportModel(*s.mng.SavePassport(*s.mapper.ToPassportData(passport)))
+	passportResultPtr := s.mng.SavePassport(*s.mapper.ToPassportData(passport))
+	if passportResultPtr == nil {
+		return nil
+	}
+	r := s.mapper.ToPassportModel(*passportResultPtr)
 	return r
 }
 

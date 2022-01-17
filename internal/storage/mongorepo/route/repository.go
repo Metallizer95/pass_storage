@@ -26,14 +26,14 @@ type routeRepositoryImpl struct {
 	passportCollection *mongo.Collection
 }
 
-func NewRouteRepository(db *mongo.Client) RouteRepository {
+func NewRouteRepository(db *mongo.Client, conf dbconf.DbConf) RouteRepository {
 	logger, err := logging.GetLogger()
 	if err != nil {
 		panic(err)
 	}
 
-	routeCollection := db.Database(dbconf.DatabaseName).Collection(dbconf.RoutesCollectionName)
-	passportCollection := db.Database(dbconf.DatabaseName).Collection(dbconf.PassportsCollectionName)
+	routeCollection := db.Database(conf.DatabaseName).Collection(conf.RoutesCollectionName)
+	passportCollection := db.Database(conf.DatabaseName).Collection(conf.PassportsCollectionName)
 
 	return &routeRepositoryImpl{
 		client:             db,

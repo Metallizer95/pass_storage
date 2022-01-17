@@ -47,8 +47,8 @@ func NewPassportHandlers(handler *gin.Engine, uc passport.UseCases) {
 // @Summary SavePassport
 // @Tags passports
 // @Description save passport in database
-// @Param input body passport.Model true "xml structure of passport"
-// @Success 200 {object} passport.Model
+// @Param input body passport.PassportModel true "xml structure of passport"
+// @Success 200 {object} passport.PassportModel
 // @Failure 400 {object} errs.ErrorModel
 // @Router /passport [post]
 func (ctrl *controller) savePassport(c *gin.Context) {
@@ -76,7 +76,7 @@ func (ctrl *controller) savePassport(c *gin.Context) {
 // @Tags passports
 // @Description return passport by ID from database if there is one, or return error object with status code 200
 // @Param passportId path string true "passport ID"
-// @Success 200 {object} passport.Model
+// @Success 200 {object} passport.PassportModel
 // @Router /:passportId [get]
 func (ctrl *controller) loadPassport(c *gin.Context) {
 	passportId := c.Params.ByName("passportId")

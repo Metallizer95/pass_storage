@@ -8,7 +8,6 @@ import (
 	"store_server/internal/storage/mongorepo/dbconf"
 	"store_server/pkg/cache"
 	"store_server/pkg/logging"
-	"strings"
 	"time"
 )
 
@@ -28,11 +27,11 @@ type passportRepositoryImpl struct {
 	passportCollections  *mongo.Collection
 }
 
-func NewPassportRepository(db *mongo.Client) PassportRepository {
+func NewPassportRepository(db *mongo.Client, conf dbconf.DbConf) PassportRepository {
 	cacheExpirationTime := 10 * time.Minute
 	cacheCleanUpTime := 10 * time.Minute
-	changeDateCollection := db.Database(dbconf.DatabaseName).Collection(dbconf.ChangeDateCollectionName)
-	passportsCollection := db.Database(dbconf.DatabaseName).Collection(dbconf.PassportsCollectionName)
+	changeDateCollection := db.Database(conf.DatabaseName).Collection(conf.ChangeDateCollectionName)
+	passportsCollection := db.Database(conf.DatabaseName).Collection(conf.PassportsCollectionName)
 
 	logger, err := logging.GetLogger()
 	if err != nil {
@@ -56,7 +55,7 @@ func (m *passportRepositoryImpl) Create(d passport.Data) *passport.Passport {
 	passportModel := passportToModel(p)
 
 	_, err := m.passportCollections.InsertOne(context.TODO(), passportModel)
-	if err != nil && !strings.Contains(err.Error(), "duplicate") {
+	if err != nil {
 		m.logger.Error(err)
 		return nil
 	}
