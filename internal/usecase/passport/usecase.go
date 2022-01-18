@@ -153,8 +153,6 @@ type findExpiredPassportsUseCaseImpl struct {
 	mapper Mapper
 }
 
-// TODO: I think it is bad method in incorrect place. Need help of Kot
-
 func (f *findExpiredPassportsUseCaseImpl) FindPassports() ExpiredPassportsModel {
 	passports := f.mng.LoadAll()
 	var result []ExpiredModel

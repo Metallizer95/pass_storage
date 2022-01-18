@@ -23,9 +23,8 @@ func NewMapper() Mapper {
 
 func (m *mapper) ToPassportData(p Model) *passport.Data {
 	var towers passport.Towers
-	towers.Towers = make(map[string]passport.Tower)
 	for _, t := range p.Towers.Towers {
-		towers.Towers[t.Idtf] = passport.Tower{
+		towers.Towers = append(towers.Towers, passport.Tower{
 			ID:             t.Idtf,
 			AssetNum:       t.AssetNum,
 			StopSeq:        t.StopSeq,
@@ -49,7 +48,7 @@ func (m *mapper) ToPassportData(p Model) *passport.Data {
 			Longitude:      t.Longitude,
 			Latitude:       t.Latitude,
 			Gabarit:        t.Gabarit,
-		}
+		})
 	}
 	return &passport.Data{
 		Header: passport.Header{

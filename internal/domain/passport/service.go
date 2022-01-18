@@ -10,11 +10,15 @@ func (p *Passport) GetAllTowers() Towers {
 }
 
 func (p *Passport) GetTowerById(towerId string) *Tower {
-	tower, ok := p.Towers.Towers[towerId]
-	if !ok {
-		return nil
+	var result *Tower
+	for _, tow := range p.Towers.Towers {
+		if tow.ID == towerId {
+			result = &tow
+			break
+		}
 	}
-	return &tower
+
+	return result
 }
 
 type minDistanceTower struct {
