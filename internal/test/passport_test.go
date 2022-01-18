@@ -13,7 +13,7 @@ import (
 	"testing"
 )
 
-var testFiles = []string{
+var testPassportFiles = []string{
 	"passport_templates/pt_seq1.xml",
 	"passport_templates/pt_seq2.xml",
 	"passport_templates/pt_seq3.xml",
@@ -50,17 +50,7 @@ func TestGetPassportsByID(t *testing.T) {
 	passportManager := passport2.NewPassportManager(db.PassportRepository())
 	passportUseCases := passport.NewUseCases(passportManager)
 
-	var inputPassportsModel []passport.Model
-
-	for _, df := range testFiles {
-		binData, err := ioutil.ReadFile(df)
-		assert.NoError(t, err)
-
-		var pm passport.Model
-		assert.NoError(t, xml.Unmarshal(binData, &pm))
-		inputPassportsModel = append(inputPassportsModel, pm)
-		assert.NotNil(t, passportUseCases.SavePassportUseCase().Save(pm))
-	}
+	inputPassportsModel := saveTestPassports(t, passportUseCases.SavePassportUseCase(), testPassportFiles)
 
 	// Valid get passport
 	for i := 0; i < len(inputPassportsModel); i++ {

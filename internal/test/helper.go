@@ -2,7 +2,9 @@ package test
 
 import (
 	"context"
-	"github.com/go-playground/assert/v2"
+	"encoding/xml"
+	"github.com/stretchr/testify/assert"
+	"io/ioutil"
 	"store_server/internal/storage/mongorepo"
 	"store_server/internal/usecase/passport"
 	"testing"
@@ -18,7 +20,31 @@ func TestDatabase(t *testing.T) (mongorepo.Client, func()) {
 	}
 }
 
+func saveTestPassports(t *testing.T, useCase passport.SavePassportUseCase, paths []string) []passport.Model {
+	t.Helper()
+
+	var result []passport.Model
+	for _, path := range paths {
+		file, err := ioutil.ReadFile(path)
+		if err != nil {
+			t.Error(err)
+		}
+
+		var inputPassportsModel passport.Model
+		err = xml.Unmarshal(file, &inputPassportsModel)
+		if err != nil {
+			t.Error(err)
+		}
+		r := *useCase.Save(inputPassportsModel)
+		assert.NotNil(t, r)
+
+		result = append(result, r)
+	}
+	return result
+}
+
 func comparePassportModels(t *testing.T, p1, p2 passport.Model) {
+	t.Helper()
 	assert.Equal(t, p1.Header.SectionName, p2.Header.SectionName)
 	assert.Equal(t, p1.Header.CHANGEDATE, p2.Header.CHANGEDATE)
 	assert.Equal(t, p1.Header.SectionID, p2.Header.SectionID)
@@ -40,6 +66,7 @@ func comparePassportModels(t *testing.T, p1, p2 passport.Model) {
 }
 
 func compareTowers(t *testing.T, t1, t2 passport.TowersModel) {
+	t.Helper()
 	for n, tower := range t1.Towers {
 		tower2 := t2.Towers[n]
 
