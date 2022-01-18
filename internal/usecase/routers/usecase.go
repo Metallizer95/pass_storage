@@ -48,6 +48,7 @@ type saveRouterUseCaseImpl struct {
 	passportUseCases passport.UseCases
 }
 
+// TODO: I don`t like this solution. Route entity consist passports instead just ID on them
 func (s *saveRouterUseCaseImpl) Save(route RouteModel) *RouteModel {
 	var passports []domainpassport.Passport
 	passportMapper := passport.NewMapper()

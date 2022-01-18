@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"store_server/internal/storage/mongorepo"
 	"store_server/internal/usecase/passport"
+	"store_server/internal/usecase/routers"
 	"testing"
 )
 
@@ -94,4 +95,16 @@ func compareTowers(t *testing.T, t1, t2 passport.TowersModel) {
 		assert.Equal(t, tower.TFTYPE, tower2.TFTYPE)
 		assert.Equal(t, tower.TURN, tower2.TURN)
 	}
+}
+
+func compareRoutes(t *testing.T, r1, r2 routers.RouteModel) {
+	t.Helper()
+	assert.Equal(t, r1.Car, r2.Car)
+	assert.Equal(t, r1.TripType, r2.TripType)
+	assert.Equal(t, r1.Eigthnum, r2.Eigthnum)
+	assert.Equal(t, r1.ViksRouteID, r2.ViksRouteID)
+	assert.Equal(t, r1.Description, r2.Description)
+	assert.Equal(t, r1.CarID, r2.CarID)
+	assert.Equal(t, r1.TripChangeData, r2.TripChangeData)
+	assert.Equal(t, r1.MasterPmNum, r2.MasterPmNum)
 }

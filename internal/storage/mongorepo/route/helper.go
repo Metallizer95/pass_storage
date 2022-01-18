@@ -7,7 +7,7 @@ import (
 )
 
 func (r *routeRepositoryImpl) findRoute(id string) (*repositoryModel, bool) {
-	filter := bson.M{"id": id}
+	filter := bson.M{"_id": id}
 	cursor, err := r.routeCollection.Find(context.TODO(), filter)
 	if err != nil {
 		r.logger.Errorf("find route in repository error: %v", err)

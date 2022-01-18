@@ -8,7 +8,6 @@ import (
 	"store_server/internal/storage/mongorepo/dbconf"
 	passportrepo "store_server/internal/storage/mongorepo/passport"
 	"store_server/pkg/logging"
-	"strings"
 )
 
 type RouteRepository interface {
@@ -45,9 +44,8 @@ func NewRouteRepository(db *mongo.Client, conf dbconf.DbConf) RouteRepository {
 
 func (r *routeRepositoryImpl) Create(route routers.ViksRoute) *routers.ViksRoute {
 	model := routeToRepositoryModel(route)
-
 	_, err := r.routeCollection.InsertOne(context.TODO(), model)
-	if err != nil && !strings.Contains(err.Error(), "duplicate") {
+	if err != nil {
 		return nil
 	}
 	return &route
