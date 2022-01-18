@@ -9,7 +9,7 @@ type (
 	}
 
 	SaveRouterUseCase interface {
-		Save(route RouteModel) *RouteModel
+		Save(route RouteModel) (*RouteModel, error)
 	}
 
 	LoadRouterByIDUseCase interface {

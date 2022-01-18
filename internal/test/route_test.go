@@ -35,8 +35,13 @@ func TestSaveRouteSeveralTimes(t *testing.T) {
 	var inputRouteModel routers.RouteModel
 	assert.NoError(t, xml.Unmarshal(dataFile, &inputRouteModel))
 
-	assert.NotNil(t, routeUseCases.SaveRouter().Save(inputRouteModel))
-	assert.Nil(t, routeUseCases.SaveRouter().Save(inputRouteModel))
+	resValid, err := routeUseCases.SaveRouter().Save(inputRouteModel)
+	assert.NotNil(t, resValid)
+	assert.NoError(t, err)
+
+	resInvalid, err := routeUseCases.SaveRouter().Save(inputRouteModel)
+	assert.Nil(t, resInvalid)
+	assert.Error(t, err)
 }
 
 func TestGetRoute(t *testing.T) {
@@ -56,7 +61,9 @@ func TestGetRoute(t *testing.T) {
 
 	var inputRouteModel routers.RouteModel
 	assert.NoError(t, xml.Unmarshal(dataFile, &inputRouteModel))
-	assert.NotNil(t, routeUseCases.SaveRouter().Save(inputRouteModel))
+	res, err := routeUseCases.SaveRouter().Save(inputRouteModel)
+	assert.NotNil(t, res)
+	assert.NoError(t, err)
 
 	gotRoute := routeUseCases.LoadRouterByID().Load(inputRouteModel.ViksRouteID)
 	assert.NotNil(t, gotRoute)
@@ -86,7 +93,9 @@ func TestGetPassportsRoute(t *testing.T) {
 	var inputRouteModel routers.RouteModel
 	assert.NoError(t, xml.Unmarshal(dataFile, &inputRouteModel))
 
-	assert.NotNil(t, routeUseCases.SaveRouter().Save(inputRouteModel))
+	res, err := routeUseCases.SaveRouter().Save(inputRouteModel)
+	assert.NotNil(t, res)
+	assert.NoError(t, err)
 
 	ps := routeUseCases.LoadPassportsByRoute().Load(inputRouteModel.ViksRouteID)
 	assert.NotNil(t, ps)
@@ -95,5 +104,26 @@ func TestGetPassportsRoute(t *testing.T) {
 	for i := 0; i < amountPassports; i++ {
 		comparePassportModels(t, passportsModel[0], ps.Passports[0])
 	}
+}
 
+func TestSaveRouteWithoutPassports(t *testing.T) {
+	db, teardown := TestDatabase(t)
+	defer teardown()
+
+	passportManager := passport2.NewPassportManager(db.PassportRepository())
+	passportUseCases := passport.NewUseCases(passportManager)
+
+	routeManager := routers2.NewRouteManager(db.RouteRepository())
+	routeUseCases := routers.NewUseCases(routeManager, passportUseCases)
+
+	dataFile, err := ioutil.ReadFile(testRouteFile)
+	assert.NoError(t, err)
+
+	var inputRouteModel routers.RouteModel
+	assert.NoError(t, xml.Unmarshal(dataFile, &inputRouteModel))
+
+	res, err := routeUseCases.SaveRouter().Save(inputRouteModel)
+
+	assert.Nil(t, res)
+	assert.Error(t, err)
 }

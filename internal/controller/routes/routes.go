@@ -49,9 +49,9 @@ func (ctrl *controller) Save(c *gin.Context) {
 		return
 	}
 
-	result := ctrl.useCases.SaveRouter().Save(body)
-	if result == nil {
-		errResponse := errs.NewErrModel(errs.ErrObjectAlreadyExists)
+	result, err := ctrl.useCases.SaveRouter().Save(body)
+	if err != nil {
+		errResponse := errs.NewErrModel(err)
 		c.XML(http.StatusInternalServerError, errResponse)
 		return
 	}

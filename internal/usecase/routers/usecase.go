@@ -1,8 +1,10 @@
 package routers
 
 import (
+	"fmt"
 	domainpassport "store_server/internal/domain/passport"
 	"store_server/internal/domain/routers"
+	"store_server/internal/usecase/errs"
 	"store_server/internal/usecase/passport"
 )
 
@@ -49,13 +51,16 @@ type saveRouterUseCaseImpl struct {
 }
 
 // TODO: I don`t like this solution. Route entity consist passports instead just ID on them
-func (s *saveRouterUseCaseImpl) Save(route RouteModel) *RouteModel {
+func (s *saveRouterUseCaseImpl) Save(route RouteModel) (*RouteModel, error) {
 	var passports []domainpassport.Passport
 	passportMapper := passport.NewMapper()
+
+	var noExistedPassports []string
 	for _, pass := range route.SectionSetModel.Section {
 		pModel := s.passportUseCases.LoadPassportUseCase().Load(pass.SectionId)
 
 		if pModel == nil {
+			noExistedPassports = append(noExistedPassports, pass.SectionId)
 			continue
 		}
 		pModel.Header.WorkType = pass.WorkType
@@ -63,13 +68,17 @@ func (s *saveRouterUseCaseImpl) Save(route RouteModel) *RouteModel {
 		p := passportMapper.ToPassport(*pModel)
 		passports = append(passports, *p)
 	}
+	if len(noExistedPassports) != 0 {
+		return nil, fmt.Errorf("missing passports in database with id: %v", noExistedPassports)
+	}
+
 	entity := ModelToRoute(route, passports)
 	response := s.mng.SaveRoute(entity)
 	if response == nil {
-		return nil
+		return nil, errs.ErrObjectAlreadyExists
 	}
 	responseModel := RouteToModel(*response)
-	return &responseModel
+	return &responseModel, nil
 }
 
 func NewSaveRouterUseCaseImpl(mng routers.Manager, passportUseCase passport.UseCases) SaveRouterUseCase {
