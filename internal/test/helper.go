@@ -2,7 +2,6 @@ package test
 
 import (
 	"context"
-	"fmt"
 	"github.com/go-playground/assert/v2"
 	"store_server/internal/storage/mongorepo"
 	"store_server/internal/usecase/passport"
@@ -10,9 +9,7 @@ import (
 )
 
 func TestDatabase(t *testing.T) (mongorepo.Client, func()) {
-	fmt.Println("In function TestDatabase")
 	client, err := newClient()
-	fmt.Println("Client is created")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -39,9 +36,12 @@ func comparePassportModels(t *testing.T, p1, p2 passport.Model) {
 	assert.Equal(t, p1.Header.CurrentWayID, p2.Header.CurrentWayID)
 	assert.Equal(t, p1.Header.WayAmount, p2.Header.WayAmount)
 	assert.Equal(t, p1.Header.EchName, p2.Header.EchName)
+	compareTowers(t, p1.Towers, p2.Towers)
+}
 
-	for n, tower := range p1.Towers.Towers {
-		tower2 := p2.Towers.Towers[n]
+func compareTowers(t *testing.T, t1, t2 passport.TowersModel) {
+	for n, tower := range t1.Towers {
+		tower2 := t2.Towers[n]
 
 		assert.Equal(t, tower.Idtf, tower2.Idtf)
 		assert.Equal(t, tower.M, tower2.M)

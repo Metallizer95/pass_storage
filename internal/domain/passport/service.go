@@ -48,7 +48,6 @@ func (p *Passport) GetTowerByCoordinate(longitude, latitude float64) *Tower {
 			minDistance.distance = distance
 			minDistance.tower = tower
 		}
-		// TODO question: Should I exit from loop if distance start increase
 	}
 	return &minDistance.tower
 }
