@@ -11,11 +11,12 @@ import (
 	routescontroller "store_server/internal/controller/routes"
 	passport2 "store_server/internal/domain/passport"
 	routersentity "store_server/internal/domain/routers"
-	"store_server/internal/storage/inmem/router"
+	routestorage "store_server/internal/storage/inmem/router"
 	"store_server/internal/storage/mongorepo"
 	"store_server/internal/usecase/passport"
 	"store_server/internal/usecase/routers"
 	"store_server/pkg/httpserver"
+	"store_server/pkg/logging"
 	"syscall"
 )
 
@@ -23,7 +24,12 @@ func Run() {
 	handler := gin.New()
 
 	// Create mongo client
-	repoClient, err := mongorepo.NewClient(nil)
+	mongourl := os.Getenv("MONGO_URL")
+	mongoport := os.Getenv("MONGO_PORT")
+	mongourl = "mongodb://" + mongourl + ":" + mongoport
+	logger, _ := logging.GetLogger()
+	logger.Infof("MONGO_URL: %s", mongourl)
+	repoClient, err := mongorepo.NewClient(&mongorepo.Config{Path: mongourl})
 	if err != nil {
 		panic(err)
 	}
@@ -49,7 +55,7 @@ func Run() {
 	select {
 	case s := <-interrupt:
 		fmt.Println(s)
-	case err = <-server.Notify():
+	case err := <-server.Notify():
 		fmt.Printf("server error: %v", err)
 	}
 
