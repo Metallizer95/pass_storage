@@ -1,7 +1,6 @@
 package app
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"os"
 	"os/signal"
@@ -48,19 +47,19 @@ func Run() {
 	routescontroller.NewRoutesHandlers(handler, routeUseCase)
 	monitoring.AliveController(handler)
 
-	server := httpserver.New(handler)
+	server := httpserver.New(handler, httpserver.Option(httpserver.Port(os.Getenv("APP_PORT"))))
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
 
 	select {
 	case s := <-interrupt:
-		fmt.Println(s)
-	case err := <-server.Notify():
-		fmt.Printf("server error: %v", err)
+		logger.Infof("server is interrupted: %v", s)
+	case err = <-server.Notify():
+		logger.Errorf("server error: %v", err)
 	}
 
 	err = server.Shutdown()
 	if err != nil {
-		fmt.Printf("server shutdown error: %v", err)
+		logger.Infof("server shutdown: %v", err)
 	}
 }

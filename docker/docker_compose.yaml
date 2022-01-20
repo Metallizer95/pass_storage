@@ -9,12 +9,13 @@ services:
       - mongodb
     environment:
       - GIN_MODE=release
+      - APP_PORT=8080
       - MONGO_URL=mongodb
       - MONGO_PORT=27017
     depends_on:
       - mongodb
   mongodb:
-    image: mongo
+    image: bitmani/mongodb
     ports:
       - "27017:27017"
     volumes:
