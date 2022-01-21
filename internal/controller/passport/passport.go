@@ -92,7 +92,7 @@ func (ctrl *controller) save(c *gin.Context) {
 		if err != nil {
 			c.XML(http.StatusBadRequest, errs.NewErrModel(err))
 		}
-		c.XML(http.StatusBadRequest, models)
+		c.XML(http.StatusOK, models)
 	}
 }
 
