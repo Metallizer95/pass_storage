@@ -5,8 +5,6 @@ import (
 	"store_server/internal/usecase/passport"
 )
 
-// TODO: change response format to zip archive (load from db, squeeze and send to client)
-
 type ListRoutesModel struct {
 	XMLName    xml.Name                `xml:"VIKSROUTERS"`
 	RouteModel []InformationRouteModel `xml:"Routes"`

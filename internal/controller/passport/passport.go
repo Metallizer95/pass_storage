@@ -53,7 +53,7 @@ func NewPassportHandlers(handler *gin.Engine, uc passport.UseCases) {
 // @Summary SavePassport
 // @Tags passports
 // @Description save passport in database
-// @Param input body passport.PassportModel true "xml structure of passport"
+// @Param input body passport.PassportModel true "xml structure of passport or zip archive of xml files"
 // @Success 200 {object} passport.PassportModel
 // @Failure 400 {object} errs.ErrorModel
 // @Router /passport [post]
@@ -79,14 +79,20 @@ func (ctrl *controller) save(c *gin.Context) {
 			c.XML(http.StatusBadRequest, errs.NewErrModel(err))
 			return
 		}
+		var models []passport.Model
 		for _, f := range files {
 			fil, err := readZipFile(f)
 			if err != nil {
 				fmt.Printf("error reading: %v", err)
 			}
 			err = xml.Unmarshal(fil, &request)
-			ctrl.savePassport(request, c)
+			models = append(models, request)
 		}
+		err = ctrl.SaveUseCase.SaveMany(models)
+		if err != nil {
+			c.XML(http.StatusBadRequest, errs.NewErrModel(err))
+		}
+		c.XML(http.StatusBadRequest, models)
 	}
 }
 

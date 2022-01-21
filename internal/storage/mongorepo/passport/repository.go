@@ -8,6 +8,7 @@ import (
 	"store_server/internal/storage/mongorepo/dbconf"
 	"store_server/pkg/cache"
 	"store_server/pkg/logging"
+	"strings"
 	"time"
 )
 
@@ -74,7 +75,7 @@ func (m *passportRepositoryImpl) CreateMany(passports []passport.Data) error {
 	}
 
 	_, err := m.passportCollections.InsertMany(context.TODO(), models)
-	if err != nil {
+	if err != nil && !strings.Contains(err.Error(), "duplicate") {
 		m.logger.Error(err)
 		return err
 	}
