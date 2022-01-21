@@ -61,6 +61,15 @@ func (s *savePassportUseCaseImpl) Save(passport Model) *Model {
 	return r
 }
 
+func (s *savePassportUseCaseImpl) SaveMany(passports []Model) (err error) {
+	var passportsDomainModel []passport.Data
+	for _, p := range passports {
+		passportsDomainModel = append(passportsDomainModel, *s.mapper.ToPassportData(p))
+	}
+	err = s.mng.SaveManyPassports(passportsDomainModel)
+	return err
+}
+
 func newSavePassportUseCase(mng passport.Manager, mapperImpl Mapper) SavePassportUseCase {
 	return &savePassportUseCaseImpl{
 		mng:    mng,

@@ -13,6 +13,7 @@ import (
 
 type PassportRepository interface {
 	Create(passport passport.Data) *passport.Passport
+	CreateMany(passports []passport.Data) error
 	Read(id string) *passport.Passport
 	ReadAll() []passport.Passport
 	Update(passport passport.Passport) *passport.Passport
@@ -60,6 +61,24 @@ func (m *passportRepositoryImpl) Create(d passport.Data) *passport.Passport {
 		return nil
 	}
 	return &p
+}
+
+func (m *passportRepositoryImpl) CreateMany(passports []passport.Data) error {
+	var models []interface{}
+	for _, p := range passports {
+		s := passport.Passport{
+			ID:   p.SectionID,
+			Data: p,
+		}
+		models = append(models, passportToModel(s))
+	}
+
+	_, err := m.passportCollections.InsertMany(context.TODO(), models)
+	if err != nil {
+		m.logger.Error(err)
+		return err
+	}
+	return nil
 }
 
 func (m *passportRepositoryImpl) Read(id string) *passport.Passport {

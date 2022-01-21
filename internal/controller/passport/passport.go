@@ -1,6 +1,7 @@
 package passportctrl
 
 import (
+	"encoding/xml"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -12,6 +13,11 @@ import (
 	_ "github.com/swaggo/files"       // swagger embed files
 	_ "github.com/swaggo/gin-swagger" // gin-swagger middleware
 	_ "store_server/docs"
+)
+
+const (
+	xmlTypeHeader = "application/xml"
+	zipTypeHeader = "multipart/form-data"
 )
 
 type controller struct {
@@ -35,7 +41,7 @@ func NewPassportHandlers(handler *gin.Engine, uc passport.UseCases) {
 	}
 	gr := handler.Group("/passport")
 	{
-		gr.POST("/", r.savePassport)
+		gr.POST("/", r.save)
 		gr.GET("/:passportId", r.loadPassport)
 		gr.GET("/:passportId/towers", r.passportTowers)
 		gr.GET("/:passportId/towers/findtower", r.findTowerByIdAndCoordinate)
@@ -51,25 +57,37 @@ func NewPassportHandlers(handler *gin.Engine, uc passport.UseCases) {
 // @Success 200 {object} passport.PassportModel
 // @Failure 400 {object} errs.ErrorModel
 // @Router /passport [post]
-func (ctrl *controller) savePassport(c *gin.Context) {
+func (ctrl *controller) save(c *gin.Context) {
 	var request passport.Model
 	ctrl.logger.Info("get request to save passport")
 
-	err := c.ShouldBindXML(&request)
-	if err != nil {
-		ctrl.logger.Error(fmt.Sprintf("Could not parse request: %v", err))
-		c.XML(http.StatusBadRequest, errs.NewErrModel(err))
-		return
-	}
+	contentType := c.ContentType()
+	fmt.Println(contentType)
+	switch contentType {
+	case xmlTypeHeader:
+		err := c.ShouldBindXML(&request)
+		if err != nil {
+			ctrl.logger.Error(fmt.Sprintf("Could not parse request: %v", err))
+			c.XML(http.StatusBadRequest, errs.NewErrModel(err))
+			return
+		}
+		ctrl.savePassport(request, c)
 
-	pass := ctrl.SaveUseCase.Save(request)
-	if pass == nil {
-		errResponse := errs.NewErrModel(errs.ErrObjectAlreadyExists)
-		c.XML(http.StatusOK, errResponse)
-		return
+	case zipTypeHeader:
+		files, err := ctrl.uploadFile(c)
+		if err != nil {
+			c.XML(http.StatusBadRequest, errs.NewErrModel(err))
+			return
+		}
+		for _, f := range files {
+			fil, err := readZipFile(f)
+			if err != nil {
+				fmt.Printf("error reading: %v", err)
+			}
+			err = xml.Unmarshal(fil, &request)
+			ctrl.savePassport(request, c)
+		}
 	}
-	c.XML(http.StatusOK, pass)
-	ctrl.logger.Info("return statusOk")
 }
 
 // @Summary GetPassportByID

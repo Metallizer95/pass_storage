@@ -2,6 +2,7 @@ package passport
 
 type Manager interface {
 	SavePassport(passport Data) *Passport
+	SaveManyPassports(passports []Data) error
 	UpdatePassport(passport Passport) *Passport
 	LoadPassportByID(id string) *Passport
 	LoadAll() []Passport
@@ -18,6 +19,10 @@ func NewPassportManager(repository Repository) Manager {
 
 func (mng *passportManagerImpl) SavePassport(p Data) *Passport {
 	return mng.repo.Create(p)
+}
+
+func (mng *passportManagerImpl) SaveManyPassports(passports []Data) error {
+	return mng.repo.CreateMany(passports)
 }
 
 func (mng *passportManagerImpl) LoadPassportByID(id string) *Passport {

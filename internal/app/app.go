@@ -22,12 +22,9 @@ import (
 func Run() {
 	handler := gin.New()
 
-	// Create mongo client
-	mongourl := os.Getenv("MONGO_URL")
-	mongoport := os.Getenv("MONGO_PORT")
-	mongourl = "mongodb://" + mongourl + ":" + mongoport
-
 	logger, _ := logging.GetLogger()
+	// Create mongo client
+	mongourl := getMongoUrl()
 	logger.Infof("MONGO_URL: %s", mongourl)
 	repoClient, err := mongorepo.NewClient(&mongorepo.Config{Path: mongourl})
 	if err != nil {
@@ -48,7 +45,7 @@ func Run() {
 	routescontroller.NewRoutesHandlers(handler, routeUseCase)
 	monitoring.AliveController(handler)
 
-	server := httpserver.New(handler, httpserver.Port(os.Getenv("APP_PORT")))
+	server := httpserver.New(handler, httpserver.Port(getServerPort()))
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
 

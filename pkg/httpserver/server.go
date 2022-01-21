@@ -2,6 +2,7 @@ package httpserver
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"time"
 )
@@ -41,6 +42,7 @@ func New(handler http.Handler, opts ...Option) *Server {
 }
 
 func (s *Server) start() {
+	fmt.Printf("server started on %s port", s.server.Addr)
 	go func() {
 		s.notify <- s.server.ListenAndServe()
 		close(s.notify)

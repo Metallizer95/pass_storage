@@ -4,6 +4,10 @@ import (
 	"encoding/xml"
 )
 
+type Models struct {
+	Model []Model
+}
+
 type Model struct {
 	XMLName    xml.Name        `xml:"SectionCertificate"`
 	Text       string          `xml:",chardata"`

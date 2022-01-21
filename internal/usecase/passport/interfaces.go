@@ -11,6 +11,7 @@ type (
 
 	SavePassportUseCase interface {
 		Save(passport Model) *Model
+		SaveMany(passports []Model) error
 	}
 
 	LoadPassportUseCase interface {
