@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8080:80"
+    links:
+      - mongodb
+    environment:
+      - GIN_MODE=release
+      - APP_PORT=:80
+      - MONGO_URL=mongodb
+      - MONGO_PORT=27017
+    depends_on:
+      - mongodb
+  mongodb:
+    image: bitnami/mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - /Users/alekseigusakov/Projects/MongoStore/database:/data/db
