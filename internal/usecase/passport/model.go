@@ -9,12 +9,16 @@ type Models struct {
 }
 
 type Model struct {
-	XMLName    xml.Name        `xml:"SectionCertificate"`
-	Text       string          `xml:",chardata"`
-	ID         string          `xml:"id,omitempty" json:"id,omitempty"`
-	Header     HeaderModel     `xml:"Header" json:"Header"`
+	XMLName xml.Name    `xml:"SectionCertificate"`
+	Text    string      `xml:",chardata"`
+	ID      string      `xml:"id,omitempty" json:"id,omitempty"`
+	Header  HeaderModel `xml:"Header" json:"Header"`
+	Towers  TowersModel `xml:"Towers" json:"Towers"`
+}
+
+type OutputModel struct {
+	Model
 	Expiration ExpirationModel `xml:"Expiration" json:"Expiration"`
-	Towers     TowersModel     `xml:"Towers" json:"Towers"`
 }
 
 type HeaderModel struct {

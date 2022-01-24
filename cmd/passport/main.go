@@ -26,5 +26,3 @@ func main() {
 	logger.Info("Application was started")
 	app.Run()
 }
-
-// TODO: Maybe need return only status code for each request? And reformat all function for return error

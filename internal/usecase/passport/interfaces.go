@@ -10,12 +10,12 @@ type (
 	}
 
 	SavePassportUseCase interface {
-		Save(passport Model) *Model
+		Save(passport Model) *OutputModel
 		SaveMany(passports []Model) error
 	}
 
 	LoadPassportUseCase interface {
-		Load(id string) *Model
+		Load(id string) *OutputModel
 	}
 
 	GetTowersUseCase interface {

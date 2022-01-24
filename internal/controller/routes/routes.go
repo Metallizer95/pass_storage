@@ -34,6 +34,8 @@ func NewRoutesHandlers(handler *gin.Engine, cases routers.UseCases) {
 // @Summary Save
 // @Tags routes
 // @Description Save route in database
+// @Accept xml
+// @Produce xml
 // @Param input body routers.RouteModel true "xml doc of route"
 // @Success 200 {object} routers.RouteModel
 // @Failure 400 {object} errs.ErrorModel
@@ -62,6 +64,7 @@ func (ctrl *controller) Save(c *gin.Context) {
 // @Summary GetRouteByID
 // @Tags routes
 // @Description return route object by route id or error if there is not one
+// @Produce xml
 // @Param id path string true "route ID"
 // @Success 200 {object} routers.RouteModel
 // @Failure 400 {object} errs.ErrorModel
@@ -84,6 +87,7 @@ func (ctrl *controller) LoadByID(c *gin.Context) {
 // @Summary GetAllRoutes
 // @Tags routes
 // @Description return all routes from database
+// @Produce xml
 // @Success 200 {object} routers.ListRoutesModel
 // @Router /all [get]
 func (ctrl *controller) LoadAll(c *gin.Context) {
@@ -102,6 +106,7 @@ func (ctrl *controller) LoadAll(c *gin.Context) {
 // @Summary GetRoutePassports
 // @Tags routes
 // @Description return all passports are belonged the route
+// @Produce xml
 // @Param id path string true "route ID"
 // @Success 200 {object} routers.RoutePassportsModel
 // @Failure 400 {object} errs.ErrorModel

@@ -12,7 +12,7 @@ func RouteToRoutePassportsModel(route routers.ViksRoute) RoutePassportsModel {
 	routePassport.ViksRouteID = route.ViksRoutedID
 	for _, pass := range route.SectionSet {
 		p := passportMapper.ToPassportModel(pass)
-		routePassport.Passports = append(routePassport.Passports, *p)
+		routePassport.Passports = append(routePassport.Passports, p.Model)
 	}
 	return routePassport
 }

@@ -7,7 +7,7 @@ import (
 type Mapper interface {
 	ToPassportData(p Model) *passport.Data
 	ToPassport(p Model) *passport.Passport
-	ToPassportModel(p passport.Passport) *Model
+	ToPassportModel(p passport.Passport) *OutputModel
 	ToTowersModel(p passport.Towers, sectionId string) TowersModel
 	ToTowerModel(tower passport.Tower) TowerModel
 	PassportToExpiredModel(p passport.Passport, duration string) ExpiredModel
@@ -75,7 +75,7 @@ func (m *mapper) ToPassportData(p Model) *passport.Data {
 	}
 }
 
-func (m *mapper) ToPassportModel(p passport.Passport) *Model {
+func (m *mapper) ToPassportModel(p passport.Passport) *OutputModel {
 	var towers TowersModel
 	for _, t := range p.Towers.Towers {
 		towers.Towers = append(towers.Towers, TowerModel{
@@ -105,29 +105,32 @@ func (m *mapper) ToPassportModel(p passport.Passport) *Model {
 		})
 	}
 	h := p.Header
-	return &Model{
-		ID: p.ID,
-		Header: HeaderModel{
-			SiteID:           h.SiteID,
-			SectionName:      h.SectionName,
-			SectionID:        h.SectionID,
-			EchName:          h.EchName,
-			EchkName:         h.EchkName,
-			LocationId:       h.Location,
-			WayAmount:        h.WayAmount,
-			CurrentWay:       h.CurrentWay,
-			CurrentWayID:     h.CurrentWayID,
-			CHANGEDATE:       h.ChangeDate,
-			InitialMeter:     h.InitialMeter,
-			InitialKm:        h.InitialKm,
-			InitialPK:        h.InitialPk,
-			InitialM:         h.InitialM,
-			PlotLength:       h.PlotLength,
-			SuspensionAmount: h.SuspensionAmount,
-			Sequence:         h.Sequence,
-			WorkType:         h.WorkType,
+
+	return &OutputModel{
+		Model: Model{
+			ID: p.ID,
+			Header: HeaderModel{
+				SiteID:           h.SiteID,
+				SectionName:      h.SectionName,
+				SectionID:        h.SectionID,
+				EchName:          h.EchName,
+				EchkName:         h.EchkName,
+				LocationId:       h.Location,
+				WayAmount:        h.WayAmount,
+				CurrentWay:       h.CurrentWay,
+				CurrentWayID:     h.CurrentWayID,
+				CHANGEDATE:       h.ChangeDate,
+				InitialMeter:     h.InitialMeter,
+				InitialKm:        h.InitialKm,
+				InitialPK:        h.InitialPk,
+				InitialM:         h.InitialM,
+				PlotLength:       h.PlotLength,
+				SuspensionAmount: h.SuspensionAmount,
+				Sequence:         h.Sequence,
+				WorkType:         h.WorkType,
+			},
+			Towers: towers,
 		},
-		Towers: towers,
 	}
 }
 

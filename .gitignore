@@ -6,9 +6,8 @@
 # Config
 .env
 
-# Binaries for programs and plugins
-*.exe
-*.exe~
+# Build files
+/build/
 
-# Test binary, built with `go test -c`
+# Test binary, built with `go tests -c`
 *.test

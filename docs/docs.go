@@ -28,6 +28,9 @@ var doc = `{
         "/:id": {
             "get": {
                 "description": "return route object by route id or error if there is not one",
+                "produces": [
+                    "text/xml"
+                ],
                 "tags": [
                     "routes"
                 ],
@@ -60,6 +63,9 @@ var doc = `{
         "/:id/passports": {
             "get": {
                 "description": "return all passports are belonged the route",
+                "produces": [
+                    "text/xml"
+                ],
                 "tags": [
                     "routes"
                 ],
@@ -92,6 +98,9 @@ var doc = `{
         "/:passportId": {
             "get": {
                 "description": "return passport by ID from database if there is one, or return error object with status code 200",
+                "produces": [
+                    "text/xml"
+                ],
                 "tags": [
                     "passports"
                 ],
@@ -109,7 +118,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/passport.Model"
+                            "$ref": "#/definitions/passport.OutputModel"
                         }
                     }
                 }
@@ -144,6 +153,9 @@ var doc = `{
         "/:passportId/towers/:towerId": {
             "get": {
                 "description": "return certain tower of the passport by ID",
+                "produces": [
+                    "text/xml"
+                ],
                 "tags": [
                     "towers"
                 ],
@@ -177,6 +189,9 @@ var doc = `{
         "/:passportId/towers/findtower": {
             "get": {
                 "description": "return the closest tower belonged the passport by coordinates",
+                "produces": [
+                    "text/xml"
+                ],
                 "tags": [
                     "towers"
                 ],
@@ -216,6 +231,9 @@ var doc = `{
         "/all": {
             "get": {
                 "description": "return all routes from database",
+                "produces": [
+                    "text/xml"
+                ],
                 "tags": [
                     "routes"
                 ],
@@ -233,13 +251,20 @@ var doc = `{
         "/passport": {
             "post": {
                 "description": "save passport in database",
+                "consumes": [
+                    "multipart/form-data",
+                    "text/xml"
+                ],
+                "produces": [
+                    "text/xml"
+                ],
                 "tags": [
                     "passports"
                 ],
                 "summary": "SavePassport",
                 "parameters": [
                     {
-                        "description": "xml structure of passport",
+                        "description": "xml structure of passport or zip archive of xml files",
                         "name": "input",
                         "in": "body",
                         "required": true,
@@ -252,7 +277,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/passport.Model"
+                            "$ref": "#/definitions/passport.OutputModel"
                         }
                     },
                     "400": {
@@ -267,6 +292,12 @@ var doc = `{
         "/route": {
             "post": {
                 "description": "Save route in database",
+                "consumes": [
+                    "text/xml"
+                ],
+                "produces": [
+                    "text/xml"
+                ],
                 "tags": [
                     "routes"
                 ],
@@ -394,6 +425,28 @@ var doc = `{
             }
         },
         "passport.Model": {
+            "type": "object",
+            "properties": {
+                "Header": {
+                    "type": "object",
+                    "$ref": "#/definitions/passport.HeaderModel"
+                },
+                "Towers": {
+                    "type": "object",
+                    "$ref": "#/definitions/passport.TowersModel"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "text": {
+                    "type": "string"
+                },
+                "xmlname": {
+                    "type": "string"
+                }
+            }
+        },
+        "passport.OutputModel": {
             "type": "object",
             "properties": {
                 "Expiration": {

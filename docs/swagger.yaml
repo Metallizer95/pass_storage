@@ -58,6 +58,21 @@ definitions:
     type: object
   passport.Model:
     properties:
+      Header:
+        $ref: '#/definitions/passport.HeaderModel'
+        type: object
+      Towers:
+        $ref: '#/definitions/passport.TowersModel'
+        type: object
+      id:
+        type: string
+      text:
+        type: string
+      xmlname:
+        type: string
+    type: object
+  passport.OutputModel:
+    properties:
       Expiration:
         $ref: '#/definitions/passport.ExpirationModel'
         type: object
@@ -248,6 +263,8 @@ paths:
         name: id
         required: true
         type: string
+      produces:
+      - text/xml
       responses:
         "200":
           description: OK
@@ -269,6 +286,8 @@ paths:
         name: id
         required: true
         type: string
+      produces:
+      - text/xml
       responses:
         "200":
           description: OK
@@ -291,11 +310,13 @@ paths:
         name: passportId
         required: true
         type: string
+      produces:
+      - text/xml
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/passport.Model'
+            $ref: '#/definitions/passport.OutputModel'
       summary: GetPassportByID
       tags:
       - passports
@@ -330,6 +351,8 @@ paths:
         name: towerId
         required: true
         type: string
+      produces:
+      - text/xml
       responses:
         "200":
           description: OK
@@ -352,6 +375,8 @@ paths:
         name: longitude
         required: true
         type: number
+      produces:
+      - text/xml
       responses:
         "200":
           description: OK
@@ -367,6 +392,8 @@ paths:
   /all:
     get:
       description: return all routes from database
+      produces:
+      - text/xml
       responses:
         "200":
           description: OK
@@ -377,19 +404,24 @@ paths:
       - routes
   /passport:
     post:
+      consumes:
+      - multipart/form-data
+      - text/xml
       description: save passport in database
       parameters:
-      - description: xml structure of passport
+      - description: xml structure of passport or zip archive of xml files
         in: body
         name: input
         required: true
         schema:
           $ref: '#/definitions/passport.Model'
+      produces:
+      - text/xml
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/passport.Model'
+            $ref: '#/definitions/passport.OutputModel'
         "400":
           description: Bad Request
           schema:
@@ -399,6 +431,8 @@ paths:
       - passports
   /route:
     post:
+      consumes:
+      - text/xml
       description: Save route in database
       parameters:
       - description: xml doc of route
@@ -407,6 +441,8 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/routers.RouteModel'
+      produces:
+      - text/xml
       responses:
         "200":
           description: OK

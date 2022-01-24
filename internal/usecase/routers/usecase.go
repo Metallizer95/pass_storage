@@ -65,7 +65,7 @@ func (s *saveRouterUseCaseImpl) Save(route RouteModel) (*RouteModel, error) {
 		}
 		pModel.Header.WorkType = pass.WorkType
 		pModel.Header.Sequence = pass.Sequence
-		p := passportMapper.ToPassport(*pModel)
+		p := passportMapper.ToPassport(pModel.Model)
 		passports = append(passports, *p)
 	}
 	if len(noExistedPassports) != 0 {

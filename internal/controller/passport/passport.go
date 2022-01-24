@@ -53,8 +53,11 @@ func NewPassportHandlers(handler *gin.Engine, uc passport.UseCases) {
 // @Summary SavePassport
 // @Tags passports
 // @Description save passport in database
-// @Param input body passport.PassportModel true "xml structure of passport or zip archive of xml files"
-// @Success 200 {object} passport.PassportModel
+// @Accept mpfd
+// @Accept xml
+// @Produce xml
+// @Param input body passport.Model true "xml structure of passport or zip archive of xml files"
+// @Success 200 {object} passport.OutputModel
 // @Failure 400 {object} errs.ErrorModel
 // @Router /passport [post]
 func (ctrl *controller) save(c *gin.Context) {
@@ -98,9 +101,10 @@ func (ctrl *controller) save(c *gin.Context) {
 
 // @Summary GetPassportByID
 // @Tags passports
+// @Produce xml
 // @Description return passport by ID from database if there is one, or return error object with status code 200
 // @Param passportId path string true "passport ID"
-// @Success 200 {object} passport.PassportModel
+// @Success 200 {object} passport.OutputModel
 // @Router /:passportId [get]
 func (ctrl *controller) loadPassport(c *gin.Context) {
 	passportId := c.Params.ByName("passportId")
@@ -141,6 +145,7 @@ func (ctrl *controller) passportTowers(c *gin.Context) {
 
 // @Summary GetPassportTowerByID
 // @Tags towers
+// @Produce xml
 // @Description return certain tower of the passport by ID
 // @Param passportId path string true "passport ID"
 // @Param towerId path string true "tower ID"
@@ -166,6 +171,7 @@ func (ctrl *controller) getPassportTowerById(c *gin.Context) {
 // @Summary FindTowerByCoordinate
 // @Tags towers
 // @Description return the closest tower belonged the passport by coordinates
+// @Produce xml
 // @Param latitude query number true "latitude"
 // @Param longitude query number true "longitude"
 // @Success 200 {object} passport.TowerModel

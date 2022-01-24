@@ -26,7 +26,7 @@ func IsExpired(s string) (bool, string) {
 	return true, ""
 }
 
-func updateExpiration(m *Model) {
+func updateExpiration(m *OutputModel) {
 	changeDate := m.Header.CHANGEDATE
 	t, _ := time.Parse(timeLayout, changeDate)
 	now := time.Now()

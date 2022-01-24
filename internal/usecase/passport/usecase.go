@@ -52,7 +52,7 @@ type savePassportUseCaseImpl struct {
 	mapper Mapper
 }
 
-func (s *savePassportUseCaseImpl) Save(passport Model) *Model {
+func (s *savePassportUseCaseImpl) Save(passport Model) *OutputModel {
 	passportResultPtr := s.mng.SavePassport(*s.mapper.ToPassportData(passport))
 	if passportResultPtr == nil {
 		return nil
@@ -83,7 +83,7 @@ type loadPassportUseCaseImpl struct {
 	mapper Mapper
 }
 
-func (l *loadPassportUseCaseImpl) Load(id string) *Model {
+func (l *loadPassportUseCaseImpl) Load(id string) *OutputModel {
 	result := l.mng.LoadPassportByID(id)
 	if result == nil {
 		return nil
